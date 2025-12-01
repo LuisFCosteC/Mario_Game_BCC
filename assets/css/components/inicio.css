@@ -1,0 +1,226 @@
+/* assets/css/components/inicio.css */
+
+/* ========== Logo inicio ========== */
+.logo-inicio {
+    position: absolute;
+    top: 5%;
+    left: 30%;
+    transform: translateX(-50%);
+    width: 50%;
+    max-width: 300px;
+    min-width: 100px;
+    height: 10%;
+    background-image: url('../../img/Logo_BBC_Banco.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+/* ========== Texto inicio ========== */
+.Texto-inicio {
+    position: absolute;
+    top: 15%;
+    left: 30%;
+    transform: translateX(-50%);
+    width: 50%;
+    max-width: 500px;
+    min-width: 100px;
+    height: 30%;
+    background-image: url('../../img/Texto_Inicio.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+/* ========== Personaje ========== */
+.personaje-1 {
+    position: absolute;
+    bottom: 25%;
+    left: 200px;
+    width: 20%;
+    max-width: 200px;
+    min-width: 100px;
+    height: 30%;
+    background-image: url('../../img/Personaje_1.2.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: bottom;
+}
+
+/* ========== Mundo Edificios ========== */
+.mundo-edificios {
+    position: absolute;
+    top: 50%;
+    left: 30%;
+    transform: translateX(-50%);
+    width: 50%;
+    max-width: 600px;
+    min-width: 400px;
+    height: 55%;
+    background-image: url('../../img/Mundo_Edificios.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+/* ========== Texto Mundos ========== */
+.texto-mundos {
+    position: absolute;
+    top: 5%;
+    right: 15%;
+    width: 20%;
+    max-width: 250px;
+    min-width: 100px;
+    height: 10%;
+    background-image: url('../../img/Texto_Inicio_2.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+/* ========== Mundos ========== */
+.mundos {
+    position: absolute;
+    bottom: -2%;
+    right: 8%;
+    width: 50%;
+    max-width: 500px;
+    min-width: 200px;
+    height: 90%;
+    background-image: url('../../img/Visual_Mundos.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+/* ========== Botones base ========== */
+.boton-inicio {
+    position: absolute;
+    border: none;
+    background: transparent;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    cursor: pointer;
+    width: 15%;
+    max-width: 300px;
+    min-width: 200px;
+    height: 10%;
+    transition: all 0.3s ease;
+}
+
+.boton-inicio:hover {
+    transform: scale(1.1);
+    filter: brightness(1.2);
+}
+
+.boton-inicio:active {
+    transform: scale(0.95);
+}
+
+/* Botones específicos */
+.boton-jugar {
+    background-image: url('../../img/Boton_Inicio_Jugar.png');
+    left: 23%;
+    top: 78%;
+}
+
+.boton-instrucciones {
+    background-image: url('../../img/Boton_Inicio_Instrucciones.png');
+    left: 16%;
+    top: 88%;
+}
+
+.boton-salir {
+    background-image: url('../../img/Boton_Inicio_Salir.png');
+    left: 29%;
+    top: 88%;
+}
+
+/* ========== Modal de Instrucciones ========== */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-instructions {
+    background-image: url('../../img/Modal_Instrucciones.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 80%;
+    max-width: 800px;
+    height: 70%;
+    position: relative;
+    animation: modalAppear 0.5s ease-out;
+}
+
+.modal-content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    padding-bottom: 15%;
+}
+
+@keyframes modalAppear {
+    from {
+        opacity: 0;
+        transform: scale(0.8) translateY(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* ========== Botones del Modal de Instrucciones ========== */
+.boton-instrucciones-modal {
+    border: none;
+    background: transparent;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: absolute;
+}
+
+.boton-instrucciones-modal:hover {
+    transform: scale(1.1);
+    filter: brightness(1.2);
+}
+
+.boton-instrucciones-modal:active {
+    transform: scale(0.95);
+}
+
+.boton-jugar-modal {
+    background-image: url('../../img/Boton_Inicio_Jugar.png');
+    position: absolute;
+    width: 20%;
+    height: 8%;
+    left: 40%;
+    bottom: 3%;
+}
+
+.boton-salir-modal {
+    background-image: url('../../img/Icono_salir.png');
+    position: absolute;
+    width: 8%;
+    height: 8%;
+    right: 32%;
+    top: 2%;
+}

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BBC - Mundo 1</title>
+    <link rel="stylesheet" href="assets/css/components/mundo-juego-1.css">
+</head>
+<body class="pagina-mundo-juego">
+    <div class="contenido-juego">
+        <!-- Sección 1 -->
+        <div class="seccion-mundo seccion-1 activa">
+            <div class="camino-1"></div>
+            <div class="camino-2"></div>
+            <!-- ⚠️ HUECO SOLO EN SECCIÓN 1 - DENTRO DEL CONTENEDOR -->
+            <div class="hueco-peligro" id="hueco-peligro"></div>
+        </div>
+
+        <!-- Sección 2 -->
+        <div class="seccion-mundo seccion-2">
+            <div class="camino-3"></div>
+            <div class="obstaculo-1" id="obstaculo-1"></div>
+            <div class="obstaculo-2" id="obstaculo-2"></div>
+            <div class="Estrella_Documento" id="Estrella_Documento"></div>
+        </div>
+
+        <!-- Sección 3 -->
+        <div class="seccion-mundo seccion-3">
+            <div class="camino-3"></div>
+            <div class="Primer_Mundo_Escaleras" id="Primer_Mundo_Escaleras"></div>
+            <div class="Primer_Mundo_Plataforma.png" id="Primer_Mundo_Plataforma.png"></div>
+        </div>
+
+        <!-- Sección 4 -->
+        <div class="seccion-mundo seccion-4">
+            <div class="meta-final" id="meta"></div>
+            <div class="camino-3"></div>
+        </div>
+
+        <!-- Personaje jugador (siempre visible) -->
+        <div class="personaje-jugador" id="jugador"></div>
+
+        <!-- Elementos de UI (siempre visibles) -->
+        <div class="Mundo-1-1"></div>
+        <div class="Flechas"></div>
+        <div class="banner-juego"></div>
+        
+        <!-- Botones -->
+        <button class="boton-juego boton-reiniciar" aria-label="Reiniciar juego"></button>
+        <button class="boton-juego boton-home" aria-label="Volver al inicio"></button>
+        <button class="boton-juego boton-salir" aria-label="Salir del juego"></button>
+    </div>
+
+    <!-- Modales del juego (se crean dinámicamente) -->
+    <div id="modales-container"></div>
+
+    <!-- MENSAJES DEL JUEGO - SIN ESTILOS EN LÍNEA -->
+    <div class="mensaje-controles"></div>
+    <div class="mensaje-caida"></div>
+    <div class="mensaje-victoria"></div>
+
+    <script src="assets/js/mundo-juego-1.js"></script>
+</body>
+</html>

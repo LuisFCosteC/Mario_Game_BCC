@@ -1,0 +1,12 @@
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+
+# Dependencias
+node_modules/
+
+# Carpetas de medios
+assets/audios/
+assets/pdf/
+assets/videos/
+assets/docs/

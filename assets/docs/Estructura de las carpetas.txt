@@ -1,0 +1,27 @@
+Mario_Game_BCC/
+├── README.md
+├── mundos.html
+├── mundos-juego-1.html
+├── index.html
+├── cargando.html
+├── .gitignore                                      # Control de versiones adecuado
+├── assets/                                         # Estructura clara para recursos estáticos
+│   ├── audios/
+│   ├── css/
+│   │   ├── style.css
+│   │   └── components
+│   │       ├── cargando.css
+│   │       ├── inicio.css
+│   │       ├── mundo-juego-1.css
+│   │       └── mundos.css
+│   ├── docs/
+│   │   └── Estructura de las carpetas.txt
+│   ├── img/
+│   ├── js/
+│   │   ├── cargando.js
+│   │   ├── inicio.js
+│   │   ├── mundo-juego-1.js
+│   │   ├── mundos.js
+│   │   └── script.js
+│   ├── pdf/
+└── └── videos/

@@ -1,0 +1,462 @@
+/* assets/css/components/mundos.css - ESTILOS MEJORADOS */
+
+/* Estilos específicos para la página de mundos */
+
+/* Contenedor de contenido - FRENTE */
+.contenido-container {
+    position: relative;
+    z-index: 10;
+    min-height: 100vh;
+}
+
+/* ESTILOS BASE PARA TODOS LOS BOTONES DE MUNDOS */
+button[class*="Mundo-"] {
+    background-color: transparent !important;
+    border: none !important;
+    outline: none !important;
+    cursor: pointer;
+    pointer-events: auto;
+    transition: all 0.5s ease-in-out;
+    animation-duration: 3s;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-in-out;
+}
+
+/* ============================================= */
+/* ANIMACIONES DE FLOTACIÓN PARA LOS MUNDOS */
+/* ============================================= */
+
+/* Animación base de flotación */
+@keyframes flotar {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-15px);
+    }
+}
+
+/* Animación de flotación suave */
+@keyframes flotar-suave {
+    0%, 100% {
+        transform: translateY(0px) rotate(0deg);
+    }
+    33% {
+        transform: translateY(-10px) rotate(1deg);
+    }
+    66% {
+        transform: translateY(-5px) rotate(-1deg);
+    }
+}
+
+/* Animación de flotación con rotación */
+@keyframes flotar-rotar {
+    0%, 100% {
+        transform: translateY(0px) rotate(0deg);
+    }
+    25% {
+        transform: translateY(-12px) rotate(2deg);
+    }
+    50% {
+        transform: translateY(-8px) rotate(0deg);
+    }
+    75% {
+        transform: translateY(-12px) rotate(-2deg);
+    }
+}
+
+/* Animación de flotación ondulante */
+@keyframes flotar-ondulante {
+    0%, 100% {
+        transform: translateY(0px) scale(1);
+    }
+    25% {
+        transform: translateY(-8px) scale(1.02);
+    }
+    50% {
+        transform: translateY(-15px) scale(1);
+    }
+    75% {
+        transform: translateY(-8px) scale(0.98);
+    }
+}
+
+/* ============================================= */
+/* POSICIONES RESPONSIVAS PARA MUNDOS */
+/* ============================================= */
+
+/* Tamaño base para mundos */
+button[class*="Mundo-"] {
+    width: 10%;
+    max-width: 250px;
+    min-width: 120px;
+    height: 20%;
+    background-size: contain;
+    background-position: center center;
+    background-repeat: no-repeat;
+}
+
+/* Mundo 1 - Animación base - SOLO ESTE ACTIVO */
+.Mundo-1-1 {
+    position: absolute;
+    left: 25%;
+    top: 8%;
+    animation-name: flotar;
+    animation-delay: 0s;
+    background-image: url('../../img/Mundo_1.1.png');
+}
+
+/* Mundo 2 - Animación suave - DESHABILITADO */
+.Mundo-2-1 {
+    position: absolute;
+    left: 44%;
+    top: 4%;
+    animation-name: flotar-suave;
+    animation-delay: 0.2s;
+    background-image: url('../../img/Mundo_2.1.png');
+}
+
+.Mundo-2-2 {
+    position: absolute;
+    left: 44%;
+    top: 4%;
+    animation-name: flotar-suave;
+    animation-delay: 0.2s;
+    background-image: url('../../img/Mundo_2.2.png');
+}
+
+/* Mundo 3 - Animación con rotación - DESHABILITADO */
+.Mundo-3-1 {
+    position: absolute;
+    left: 65%;
+    top: 8%;
+    animation-name: flotar-rotar;
+    animation-delay: 0.4s;
+    background-image: url('../../img/Mundo_3.1.png');
+}
+
+.Mundo-3-2 {
+    position: absolute;
+    left: 65%;
+    top: 8%;
+    animation-name: flotar-rotar;
+    animation-delay: 0.4s;
+    background-image: url('../../img/Mundo_3.2.png');
+}
+
+/* Mundo 4 - Animación ondulante - DESHABILITADO */
+.Mundo-4-1 {
+    position: absolute;
+    left: 10%;
+    top: 32%;
+    animation-name: flotar-ondulante;
+    animation-delay: 0.6s;
+    background-image: url('../../img/Mundo_4.1.png');
+}
+
+.Mundo-4-2 {
+    position: absolute;
+    left: 10%;
+    top: 32%;
+    animation-name: flotar-ondulante;
+    animation-delay: 0.6s;
+    background-image: url('../../img/Mundo_4.2.png');
+}
+
+/* Mundo 5 - Animación base con delay diferente - DESHABILITADO */
+.Mundo-5-1 {
+    position: absolute;
+    left: 44%;
+    top: 32%;
+    animation-name: flotar;
+    animation-delay: 0.8s;
+    background-image: url('../../img/Mundo_5.1.png');
+}
+
+.Mundo-5-2 {
+    position: absolute;
+    left: 44%;
+    top: 32%;
+    animation-name: flotar;
+    animation-delay: 0.8s;
+    background-image: url('../../img/Mundo_5.2.png');
+}
+
+/* Mundo 6 - Animación suave con delay diferente - DESHABILITADO */
+.Mundo-6-1 {
+    position: absolute;
+    left: 80%;
+    top: 32%;
+    animation-name: flotar-suave;
+    animation-delay: 1s;
+    background-image: url('../../img/Mundo_6.1.png');
+}
+
+.Mundo-6-2 {
+    position: absolute;
+    left: 80%;
+    top: 32%;
+    animation-name: flotar-suave;
+    animation-delay: 1s;
+    background-image: url('../../img/Mundo_6.2.png');
+}
+
+/* Mundo 7 - Animación con rotación y delay - DESHABILITADO */
+.Mundo-7-1 {
+    position: absolute;
+    left: 25%;
+    top: 52%;
+    animation-name: flotar-rotar;
+    animation-delay: 1.2s;
+    background-image: url('../../img/Mundo_7.1.png');
+}
+
+.Mundo-7-2 {
+    position: absolute;
+    left: 25%;
+    top: 52%;
+    animation-name: flotar-rotar;
+    animation-delay: 1.2s;
+    background-image: url('../../img/Mundo_7.2.png');
+}
+
+/* Mundo 8 - Animación ondulante con delay - DESHABILITADO */
+.Mundo-8-1 {
+    position: absolute;
+    left: 44%;
+    top: 62%;
+    animation-name: flotar-ondulante;
+    animation-delay: 1.4s;
+    background-image: url('../../img/Mundo_8.1.png');
+}
+
+.Mundo-8-2 {
+    position: absolute;
+    left: 44%;
+    top: 62%;
+    animation-name: flotar-ondulante;
+    animation-delay: 1.4s;
+    background-image: url('../../img/Mundo_8.2.png');
+}
+
+/* Mundo 9 - Animación base con el delay más largo - DESHABILITADO */
+.Mundo-9-1 {
+    position: absolute;
+    left: 65%;
+    top: 52%;
+    animation-name: flotar;
+    animation-delay: 1.6s;
+    background-image: url('../../img/Mundo_9.1.png');
+}
+
+.Mundo-9-2 {
+    position: absolute;
+    left: 65%;
+    top: 52%;
+    animation-name: flotar;
+    animation-delay: 1.6s;
+    background-image: url('../../img/Mundo_9.2.png');
+}
+
+/* ============================================= */
+/* ESTILOS PARA MUNDOS POR ESTADO */
+/* ============================================= */
+
+/* MUNDO ACTIVO (SOLO MUNDO-1-1) */
+.Mundo-1-1 {
+    opacity: 1 !important;
+    filter: none !important;
+    pointer-events: auto !important;
+    cursor: pointer !important;
+    visibility: visible !important;
+}
+
+/* Efectos hover SOLO para mundo activo */
+.Mundo-1-1:hover {
+    transform: scale(1.05);
+    animation-play-state: paused;
+    filter: brightness(1.1) !important;
+}
+
+.Mundo-1-1:active {
+    transform: scale(0.95);
+}
+
+/* MUNDOS DESHABILITADOS (Mundo-2-1 a Mundo-9-1) */
+.Mundo-2-1,
+.Mundo-3-1,
+.Mundo-4-1,
+.Mundo-5-1,
+.Mundo-6-1,
+.Mundo-7-1,
+.Mundo-8-1,
+.Mundo-9-1 {
+    opacity: 0.6 !important;
+    filter: grayscale(60%) !important;
+    pointer-events: none !important;
+    cursor: not-allowed !important;
+    visibility: visible !important;
+}
+
+/* MUNDOS OCULTOS (todos los Mundo-X-2) */
+.Mundo-2-2,
+.Mundo-3-2,
+.Mundo-4-2,
+.Mundo-5-2,
+.Mundo-6-2,
+.Mundo-7-2,
+.Mundo-8-2,
+.Mundo-9-2 {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    cursor: default !important;
+}
+
+/* ============================================= */
+/* ESTILOS PARA ELEMENTOS ADICIONALES */
+/* ============================================= */
+
+/* Banner BBC */
+.Logo_BBC_banner {
+    position: absolute;
+    left: 50%;
+    top: 95%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    max-width: 1400px;
+    min-width: 100px;
+    height: 100%;
+    background-image: url('../../img/Logo_BBC_banner.png');
+    background-size: contain;
+    background-position: center center;
+    background-repeat: no-repeat;
+    animation: none !important;
+}
+
+/* Botones de navegación */
+.boton-mundos {
+    position: absolute;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    background-size: contain;
+    background-position: center center;
+    background-repeat: no-repeat;
+    transition: transform 0.2s ease;
+    z-index: 1000;
+    pointer-events: auto;
+    animation: none !important;
+}
+
+.boton-mundos:hover {
+    transform: scale(1.09);
+}
+
+.boton-mundos:active {
+    transform: scale(0.95);
+}
+
+.boton-salir {
+    left: 3%;
+    bottom: 5%;
+    width: 10%;
+    max-width: 100px;
+    min-width: 100px;
+    height: 7%;
+    background-image: url('../../img/Icono_salir.png');
+}
+
+.boton-home {
+    right: 3%;
+    bottom: 5%;
+    width: 7%;
+    max-width: 100px;
+    min-width: 100px;
+    height: 7%;
+    background-image: url('../../img/Icono_home.png');
+}
+
+/* ============================================= */
+/* MEDIA QUERIES PARA DIFERENTES RESOLUCIONES DE PC */
+/* ============================================= */
+
+@media (max-width: 1600px) {
+    button[class*="Mundo-"] {
+        width: 9%;
+        min-width: 70px;
+    }
+    
+    .Logo_BBC_banner {
+        width: 42%;
+        height: 60%;
+    }
+}
+
+@media (max-width: 1366px) {
+    button[class*="Mundo-"] {
+        width: 10%;
+        min-width: 60px;
+    }
+    
+    .Logo_BBC_banner {
+        width: 45%;
+        height: 55%;
+    }
+    
+    /* Ajustar posiciones para pantallas más pequeñas */
+    .Mundo-1-1 { left: 18%; top: 7%; }
+    .Mundo-2-1 { left: 32%; top: 3%; }
+    .Mundo-2-2 { left: 27%; top: 5%; }
+    .Mundo-3-1 { left: 49%; top: 7%; }
+    .Mundo-3-2 { left: 44%; top: 8%; }
+    .Mundo-4-1 { left: 8%; top: 21%; }
+    .Mundo-4-2 { left: 14%; top: 18%; }
+    .Mundo-5-1 { left: 32%; top: 18%; }
+    .Mundo-5-2 { left: 37%; top: 16%; }
+    .Mundo-6-1 { left: 61%; top: 21%; }
+    .Mundo-6-2 { left: 55%; top: 18%; }
+    .Mundo-7-1 { left: 19%; top: 32%; }
+    .Mundo-7-2 { left: 24%; top: 30%; }
+    .Mundo-8-1 { left: 32%; top: 36%; }
+    .Mundo-8-2 { left: 37%; top: 34%; }
+    .Mundo-9-1 { left: 49%; top: 32%; }
+    .Mundo-9-2 { left: 44%; top: 30%; }
+}
+
+@media (max-width: 1024px) {
+    button[class*="Mundo-"] {
+        width: 12%;
+        min-width: 50px;
+    }
+    
+    .Logo_BBC_banner {
+        width: 50%;
+        height: 50%;
+    }
+    
+    .boton-salir,
+    .boton-home {
+        width: 5%;
+        bottom: 3%;
+    }
+    
+    /* Ajustar posiciones para pantallas 1024px */
+    .Mundo-1-1 { left: 15%; top: 6%; }
+    .Mundo-2-1 { left: 30%; top: 2%; }
+    .Mundo-2-2 { left: 25%; top: 4%; }
+    .Mundo-3-1 { left: 47%; top: 6%; }
+    .Mundo-3-2 { left: 42%; top: 7%; }
+    .Mundo-4-1 { left: 5%; top: 20%; }
+    .Mundo-4-2 { left: 12%; top: 17%; }
+    .Mundo-5-1 { left: 30%; top: 17%; }
+    .Mundo-5-2 { left: 35%; top: 15%; }
+    .Mundo-6-1 { left: 59%; top: 20%; }
+    .Mundo-6-2 { left: 53%; top: 17%; }
+    .Mundo-7-1 { left: 17%; top: 31%; }
+    .Mundo-7-2 { left: 22%; top: 29%; }
+    .Mundo-8-1 { left: 30%; top: 35%; }
+    .Mundo-8-2 { left: 35%; top: 33%; }
+    .Mundo-9-1 { left: 47%; top: 31%; }
+    .Mundo-9-2 { left: 42%; top: 29%; }
+}

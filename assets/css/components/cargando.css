@@ -1,0 +1,231 @@
+/* assets/css/components/cargando.css */
+
+/* Estilos específicos para la página de carga */
+
+/* Texto */
+.texto-cargando {
+    position: absolute;
+    left: 50%;
+    top: 10%;
+    transform: translateX(-50%);
+    width: 40%;
+    max-width: 800px;
+    min-width: 400px;
+    height: 25%;
+    background-image: url('../../img/Texto_cargando.png');
+    background-size: contain;
+    background-position: center center;
+    background-repeat: no-repeat;
+}
+
+/* BBC Bandera */
+.BBC-bandera {
+    position: absolute;
+    left: 50%;
+    top: 85%;
+    transform: translateX(-50%);
+    width: 15%;
+    max-width: 300px;
+    min-width: 150px;
+    height: 15%;
+    background-image: url('../../img/Logo_BBC_bandera.png');
+    background-size: contain;
+    background-position: center center;
+    background-repeat: no-repeat;
+}
+
+/* Botones */
+.boton-cargando {
+    position: absolute;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    background-size: contain;
+    background-position: center center;
+    background-repeat: no-repeat;
+    transition: transform 0.2s ease;
+    z-index: 1000;
+    pointer-events: auto;
+}
+
+.boton-cargando:hover {
+    transform: scale(1.09);
+}
+
+.boton-cargando:active {
+    transform: scale(0.95);
+}
+
+.boton-salir {
+    left: 3%;
+    bottom: 5%;
+    width: 4%;
+    max-width: 70px;
+    min-width: 50px;
+    height: 6%;
+    background-image: url('../../img/Icono_salir.png');
+}
+
+.boton-home {
+    right: 3%;
+    bottom: 5%;
+    width: 4%;
+    max-width: 60px;
+    min-width: 40px;
+    height: 6%;
+    background-image: url('../../img/Icono_home.png');
+}
+
+/* Contenedor principal de barra y porcentaje */
+.contenedor-barra-completa {
+    position: absolute;
+    left: 50%;
+    top: 40%;
+    transform: translateX(-50%);
+    width: 45%;
+    max-width: 850px;
+    min-width: 500px;
+    height: 8%;
+    display: flex;
+    align-items: center;
+    gap: 2%;
+}
+
+/* Barra de progreso */
+.barra-progreso {
+    width: 85%;
+    height: 100%;
+    border: 8px solid #FFD700;
+    border-radius: 30px;
+    background: #28B6FD;
+    overflow: hidden;
+    position: relative;
+    flex-shrink: 0;
+}
+
+.progreso {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 0%;
+    background: repeating-linear-gradient(
+        90deg,
+        #FFD700 0 50px,
+        #28B6FD 50px 70px
+    );
+    transition: width 0.3s ease;
+}
+
+/* Porcentaje a la derecha fuera de la barra */
+.porcentaje {
+    font-size: 1.8vw;
+    font-weight: bold;
+    color: #FFD700;
+    min-width: 60px;
+    text-align: right;
+}
+
+.texto_barra {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translateX(-50%);
+    font-size: 2vw;
+    font-weight: 500;
+    color: #FFD700;
+    text-align: center;
+}
+
+.puntos_barra::after {
+    content: '';
+    animation: puntos_barra 1.5s steps(3, end) infinite;
+}
+
+@keyframes puntos_barra {
+    0% { content: ''; }
+    33% { content: '.'; }
+    66% { content: '..'; }
+    100% { content: '...'; }
+}
+
+/* Media Queries para diferentes resoluciones de PC */
+@media (max-width: 1600px) {
+    .texto-cargando {
+        width: 45%;
+        top: 8%;
+    }
+    
+    .BBC-bandera {
+        width: 18%;
+        top: 85%;
+    }
+    
+    .contenedor-barra-completa {
+        width: 50%;
+    }
+    
+    .porcentaje {
+        font-size: 2vw;
+    }
+    
+    .texto_barra {
+        font-size: 2.2vw;
+    }
+}
+
+@media (max-width: 1366px) {
+    .texto-cargando {
+        width: 50%;
+        top: 7%;
+    }
+    
+    .BBC-bandera {
+        width: 20%;
+        top: 55%;
+    }
+    
+    .contenedor-barra-completa {
+        width: 55%;
+        min-width: 450px;
+    }
+    
+    .porcentaje {
+        font-size: 2.2vw;
+    }
+    
+    .texto_barra {
+        font-size: 2.4vw;
+    }
+}
+
+@media (max-width: 1024px) {
+    .texto-cargando {
+        width: 60%;
+        top: 5%;
+    }
+    
+    .BBC-bandera {
+        width: 25%;
+        top: 52%;
+    }
+    
+    .contenedor-barra-completa {
+        width: 65%;
+        min-width: 400px;
+    }
+    
+    .porcentaje {
+        font-size: 2.5vw;
+    }
+    
+    .texto_barra {
+        font-size: 2.8vw;
+    }
+    
+    .boton-salir,
+    .boton-home {
+        width: 5%;
+        bottom: 3%;
+    }
+}

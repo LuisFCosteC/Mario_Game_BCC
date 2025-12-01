@@ -1,0 +1,1693 @@
+/* assets/css/components/mundo-juego-1.css */
+
+/* ============================================= */
+/* ESTILOS PARA EL JUEGO DEL MUNDO 1 - MEJORADO */
+/* ============================================= */
+
+/* Variables CSS para mantenibilidad */
+:root {
+    --jugador-ancho: 150px;
+    --jugador-alto: 200px;
+    --camino-altura: 100px;
+    --z-index-fondo: 10;
+    --z-index-camino: 40;
+    --z-index-jugador: 100;
+    --z-index-ui: 1000;
+    --z-index-modal: 2000;
+    --transition-rapida: 0.2s ease;
+    --transition-media: 0.3s ease;
+    --transition-lenta: 0.5s ease-out;
+}
+
+body.pagina-mundo-juego {
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+}
+
+.contenido-juego {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* ========== SECCIONES DEL MUNDO ========== */
+.seccion-mundo {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    transition: opacity 0.3s ease-in-out;
+    opacity: 0;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.seccion-mundo.activa {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* MEJORADO: Cuando la sección está activa, mostrar solo sus elementos */
+.seccion-mundo.activa .camino-1,
+.seccion-mundo.activa .camino-2,
+.seccion-mundo.activa .obstaculo {
+    opacity: 1;
+    pointer-events: auto;
+    transition: opacity 0.3s ease-in-out 0.1s; /* Delay para sincronizar con fondo */
+}
+
+/* Estados para elementos que cambian por sección */
+.camino-1, .camino-2, .obstaculo {
+    transition: opacity 0.2s ease-in-out;
+}
+
+/* Fondos específicos de cada sección */
+.seccion-1 { 
+    background-image: url('../../img/Fondo_Primer_mundo_sección_1.png'); 
+}
+
+.seccion-2 { 
+    background-image: url('../../img/Fondo_Primer_mundo_sección_2.png'); 
+}
+
+.seccion-3 { 
+    background-image: url('../../img/Fondo_Primer_mundo_sección_3.png'); 
+}
+
+.seccion-4 { 
+    background-image: url('../../img/Fondo_Primer_mundo_sección_4.png'); 
+}
+
+/* ========== CAMINOS ========== */
+.camino-1, .camino-2 {
+    position: absolute;
+    top: 58%;
+    height: var(--camino-altura);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center bottom;
+    z-index: var(--z-index-camino);
+}
+
+.camino-1 {
+    left: 0;
+    width: 50%;
+    background-image: url('../../img/Camina_Primer_Mundo_1.png');
+}
+
+.camino-2 {
+    right: 0; 
+    width: 41%;
+    background-image: url('../../img/Camina_Primer_Mundo_2.png');
+}
+
+.camino-3 {
+    position: absolute;
+    top: 58%;
+    left: 0;
+    width: 100%;
+    height: var(--camino-altura);
+    background-image: url('../../img/Camina_Primer_Mundo_1.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center bottom;
+    z-index: var(--z-index-camino);
+}
+
+/* Asegurar que el camino-3 solo sea visible en secciones activas */
+.seccion-mundo:not(.activa) .camino-3 {
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+.seccion-mundo.activa .camino-3 {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* ========== ELEMENTOS DE INTERFAZ ========== */
+.Mundo-1-1 {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    width: 150px;
+    height: 150px;
+    background-image: url('../../img/Mundo_1.1.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    z-index: var(--z-index-ui);
+}
+
+.banner-juego {
+    position: absolute;
+    bottom: -25px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 300px;
+    height: 150px;
+    background-image: url('../../img/Banner.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    z-index: calc(var(--z-index-ui) - 100);
+}
+
+.Flechas {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 140px;
+    height: 150px;
+    background-image: url('../../img/Flechas.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    z-index: calc(var(--z-index-ui) - 100);
+}
+
+/* ========== BOTONES DEL JUEGO ========== */
+.boton-juego {
+    position: absolute;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    background-size: contain;
+    background-position: center center;
+    background-repeat: no-repeat;
+    transition: transform var(--transition-rapida);
+    z-index: var(--z-index-ui);
+}
+
+.boton-juego:hover {
+    transform: scale(1.1);
+}
+
+.boton-juego:active {
+    transform: scale(0.95);
+}
+
+/* Posiciones específicas de botones */
+.boton-reiniciar {
+    width: 60px;
+    height: 60px;
+    bottom: 1px;
+    left: calc(51% - 120px);
+    background-image: url('../../img/Icono_reiniciar.png');
+}
+
+.boton-home {
+    width: 55px;
+    height: 55px;
+    bottom: 5px;
+    left: calc(54.5% - 120px);
+    background-image: url('../../img/Icono_home.png');
+}
+
+.boton-salir {
+    width: 55px;
+    height: 55px;
+    bottom: 5px;
+    left: calc(58% - 120px);
+    background-image: url('../../img/Icono_salir.png');
+}
+
+/* ========== PERSONAJE JUGADOR ========== */
+.personaje-jugador {
+    position: absolute;
+    top: 38%;
+    left: 10px;
+    width: var(--jugador-ancho);
+    height: var(--jugador-alto);
+    background-image: url('../../img/Personaje_1.2.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    z-index: var(--z-index-jugador);
+    transition: 
+        left 0.1s ease-out,
+        top 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* ========== ESTADOS DE DIRECCIÓN DEL PERSONAJE ========== */
+.personaje-jugador.derecha { 
+    background-image: url('../../img/Personaje_1.2.png'); 
+    transform: scaleX(1);
+}
+
+.personaje-jugador.izquierda { 
+    background-image: url('../../img/Personaje_1.1.png'); 
+    transform: scaleX(1);
+}
+
+.personaje-jugador.arriba { 
+    background-image: url('../../img/Personaje_1.3.png'); 
+    transform: scaleX(1);
+}
+
+.personaje-jugador.meta { 
+    background-image: url('../../img/Personaje_1.4.png'); 
+}
+
+/* ========== ANIMACIÓN DE TRANSICIÓN ENTRE SECCIONES MEJORADA ========== */
+.personaje-jugador.transicionando {
+    animation: transicionSeccion 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    pointer-events: none;
+    z-index: calc(var(--z-index-jugador) + 10);
+}
+
+@keyframes transicionSeccion {
+    0% {
+        transform: translateX(0) scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: translateX(120px) scale(1.1);
+        opacity: 0.7;
+    }
+    100% {
+        transform: translateX(250px) scale(1);
+        opacity: 0;
+    }
+}
+
+/* Animación de entrada en nueva sección */
+.personaje-jugador.entrando {
+    animation: entradaSeccion 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes entradaSeccion {
+    0% {
+        transform: translateX(-200px) scale(0.9);
+        opacity: 0;
+    }
+    70% {
+        transform: translateX(20px) scale(1.05);
+        opacity: 0.8;
+    }
+    100% {
+        transform: translateX(0) scale(1);
+        opacity: 1;
+    }
+}
+
+/* ========== MEJORAS PARA ANIMACIONES DEL PERSONAJE ========== */
+.personaje-jugador.saltando { 
+    background-image: url('../../img/Personaje_1.3.png');
+    animation: salto 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes salto {
+    0% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-80px) scale(1.05); }
+    100% { transform: translateY(0) scale(1); }
+}
+
+.personaje-jugador.cayendo {
+    background-image: url('../../img/Personaje_1.4.png');
+    animation: caida 0.2s ease-in;
+}
+
+@keyframes caida {
+    0% { transform: translateY(-20px); }
+    100% { transform: translateY(0); }
+}
+
+/* ========== ANIMACIONES MEJORADAS PARA CAÍDA EN HUECO ========== */
+.personaje-jugador.cayendo-hueco {
+    background-image: url('../../img/Personaje_1.4.png');
+    animation: caidaHueco 0.4s ease-in forwards;
+}
+
+@keyframes caidaHueco {
+    0% { 
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+    }
+    50% { 
+        transform: translateY(50px) rotate(10deg);
+        opacity: 0.8;
+    }
+    100% { 
+        transform: translateY(100px) rotate(20deg);
+        opacity: 0;
+    }
+}
+
+/* ========== ANIMACIÓN DE COLISIÓN CON OBSTÁCULO ========== */
+.personaje-jugador.colisionando-obstaculo {
+    animation: colisionObstaculo 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+    pointer-events: none;
+    z-index: calc(var(--z-index-jugador) + 20);
+}
+
+@keyframes colisionObstaculo {
+    0% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+    30% {
+        transform: translateY(-120px) scale(1.1);
+        opacity: 0.9;
+    }
+    70% {
+        transform: translateY(-80px) scale(1.05);
+        opacity: 0.7;
+    }
+    100% {
+        transform: translateY(100px) scale(0.8);
+        opacity: 0;
+    }
+}
+
+/* ========== ANIMACIÓN DE RECOGER ESTRELLA ========== */
+.personaje-jugador.recogiendo-estrella {
+    animation: recogerEstrella 0.6s ease-in-out forwards;
+    z-index: calc(var(--z-index-jugador) + 30);
+}
+
+@keyframes recogerEstrella {
+    0% {
+        transform: scale(1) rotate(0deg);
+    }
+    50% {
+        transform: scale(1.2) rotate(180deg);
+    }
+    100% {
+        transform: scale(1) rotate(360deg);
+    }
+}
+
+/* ========== HUECO SOLO EN SECCIÓN 1 ========== */
+.seccion-1.activa .hueco-peligro {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.seccion-mundo:not(.seccion-1) .hueco-peligro,
+.seccion-1:not(.activa) .hueco-peligro {
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+/* ========== INDICADOR VISUAL DEL HUECO ========== */
+.hueco-peligro {
+    position: absolute;
+    top: 58%;
+    left: 50%;
+    width: 9%;
+    height: var(--camino-altura);
+    background: linear-gradient(45deg, rgba(255,0,0,0.3) 25%, transparent 25%, 
+                transparent 50%, rgba(255,0,0,0.3) 50%, rgba(255,0,0,0.3) 75%, 
+                transparent 75%, transparent);
+    background-size: 20px 20px;
+    z-index: var(--z-index-camino);
+    animation: parpadeoPeligro 1.5s infinite;
+    pointer-events: none;
+    transition: opacity 0.3s ease-in-out;
+    
+    /* Oculto por defecto */
+    opacity: 0;
+    pointer-events: none;
+    display: none;
+}
+
+/* REGLA CRÍTICA: Solo mostrar cuando la sección 1 está activa */
+.seccion-1.activa .hueco-peligro {
+    opacity: 1;
+    pointer-events: auto;
+    display: block;
+}
+
+/* REGLAS DE SEGURIDAD: Asegurar ocultación en otras secciones */
+.seccion-2 .hueco-peligro,
+.seccion-3 .hueco-peligro,
+.seccion-4 .hueco-peligro,
+.seccion-1:not(.activa) .hueco-peligro {
+    opacity: 0 !important;
+    pointer-events: none !important;
+    display: none !important;
+}
+
+@keyframes parpadeoPeligro {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.7; }
+}
+
+/* ========== OBSTÁCULOS ========== */
+.obstaculo-1, .obstaculo-2 {
+    position: absolute;
+    top: 55%; /* Misma posición vertical que el camino */
+    width: 80px;
+    height: 80px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    z-index: var(--z-index-camino); /* Para que esté sobre el camino */
+    pointer-events: none; /* No interferir con otros eventos */
+    opacity: 0; /* Oculto por defecto */
+    transition: opacity 0.3s ease-in-out;
+}
+
+/* Mostrar obstáculos solo en sección activa */
+.seccion-2.activa .obstaculo-1,
+.seccion-2.activa .obstaculo-2 {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Ocultar obstáculos en otras secciones */
+.seccion-mundo:not(.seccion-2) .obstaculo-1,
+.seccion-mundo:not(.seccion-2) .obstaculo-2,
+.seccion-2:not(.activa) .obstaculo-1,
+.seccion-2:not(.activa) .obstaculo-2 {
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+/* Imágenes específicas para cada obstáculo */
+.obstaculo-1 {
+    background-image: url('../../img/obstaculo-1.png');
+    left: 25%; /* Posición horizontal en la sección 2 */
+}
+
+.obstaculo-2 {
+    background-image: url('../../img/obstaculo-2.png');
+    left: 70%; /* Posición horizontal en la sección 2 */
+}
+
+/* ========== ESTRELLA DOCUMENTO ========== */
+.Estrella_Documento {
+    position: absolute;
+    top: 15%; /* Posicionada más arriba para requerir salto */
+    left: 45%; /* Entre los dos obstáculos */
+    width: 70px;
+    height: 70px;
+    background-image: url('../../img/Estrella_Documento.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    z-index: calc(var(--z-index-camino) + 5); /* Por encima del camino */
+    pointer-events: none;
+    opacity: 0; /* Oculto por defecto */
+    transition: opacity 0.3s ease-in-out;
+    animation: flotarEstrella 3s ease-in-out infinite;
+}
+
+/* Mostrar estrella solo en sección activa */
+.seccion-2.activa .Estrella_Documento {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Ocultar estrella en otras secciones */
+.seccion-mundo:not(.seccion-2) .Estrella_Documento,
+.seccion-2:not(.activa) .Estrella_Documento {
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+/* Animación de flotación para la estrella */
+@keyframes flotarEstrella {
+    0%, 100% {
+        transform: translateY(0) rotate(0deg);
+    }
+    50% {
+        transform: translateY(-15px) rotate(5deg);
+    }
+}
+
+/* Efecto de brillo para la estrella */
+.Estrella_Documento::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    background: radial-gradient(circle, rgba(255,255,255,0.4) 0%, transparent 70%);
+    border-radius: 50%;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+    z-index: -1;
+}
+
+.Estrella_Documento:hover::before {
+    opacity: 1;
+}
+
+/* ========== MENSAJES OCULTOS POR DEFECTO ========== */
+.mensaje-controles,
+.mensaje-caida,
+.mensaje-victoria {
+    display: none;
+}
+
+/* ========== MENSAJE DE CONTROLES MEJORADO ========== */
+.mensaje-controles {
+    position: fixed;
+    top: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, #004DCB 100%, #03B1F6 0%);
+    color: white;
+    padding: 20px 30px;
+    border-radius: 15px;
+    font-family: Arial, sans-serif;
+    font-size: 22px;
+    font-weight: bold;
+    z-index: 10001;
+    text-align: center;
+    border: 3px solid #FFFFFF;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+    box-shadow: 0 6px 15px rgba(0, 77, 203, 0.5);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    pointer-events: none;
+}
+
+.mensaje-controles.mostrar {
+    opacity: 1;
+}
+
+/* ========== MENSAJE DE CAÍDA ========== */
+.mensaje-caida {
+    position: fixed;
+    top: 15%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, #03B1F6 0%, #004DCB 100%);
+    color: white;
+    padding: 20px 35px;
+    border-radius: 15px;
+    font-family: Arial, sans-serif;
+    font-size: 24px;
+    font-weight: bold;
+    z-index: 10001;
+    text-align: center;
+    border: 3px solid #FFFFFF;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+    box-shadow: 0 6px 15px rgba(3, 177, 246, 0.5);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    pointer-events: none;
+    display: none;
+}
+
+.mensaje-caida.mostrar {
+    opacity: 1;
+}
+
+/* ========== MENSAJE DE VICTORIA MEJORADO ========== */
+.mensaje-victoria {
+    position: fixed;
+    top: 15%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, #4CAF50 100%, #81C784 0%);
+    color: white;
+    padding: 20px 35px;
+    border-radius: 15px;
+    font-family: Arial, sans-serif;
+    font-size: 24px;
+    font-weight: bold;
+    z-index: 10001;
+    text-align: center;
+    border: 3px solid #FFFFFF;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+    box-shadow: 0 6px 15px rgba(76, 175, 80, 0.5);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    pointer-events: none;
+}
+
+.mensaje-victoria.mostrar {
+    opacity: 1;
+}
+
+/* ========== MENSAJES DE ERROR ========== */
+.mensaje-error-video,
+.mensaje-error-audio {
+    background: #ff6b6b;
+    color: white;
+    padding: 15px;
+    border-radius: 8px;
+    margin: 10px 0;
+    text-align: center;
+    font-family: Arial, sans-serif;
+    border: 2px solid #dc3545;
+}
+
+.mensaje-error-video code,
+.mensaje-error-audio code {
+    background: rgba(255,255,255,0.2);
+    padding: 5px 10px;
+    border-radius: 4px;
+    display: inline-block;
+    margin: 5px 0;
+}
+
+/* Estados para elementos que cambian por sección */
+.camino-1, .camino-2, .obstaculo {
+    transition: opacity 0.5s ease-in-out;
+}
+
+/* Cuando se desactiva una sección, ocultar caminos y obstáculos */
+.seccion-mundo:not(.activa) .camino-1,
+.seccion-mundo:not(.activa) .camino-2,
+.seccion-mundo:not(.activa) .obstaculo,
+.seccion-mundo:not(.activa) .hueco-peligro {
+    opacity: 0 !important;
+    pointer-events: none !important;
+    transition: opacity 0.2s ease-in-out !important;
+}
+
+/* ========== VERIFICACIÓN DE ESTRUCTURA DE MENSAJES ========== */
+.mensaje-controles:before,
+.mensaje-caida:before,
+.mensaje-victoria:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 12px;
+    z-index: -1;
+}
+
+/* Asegurar que los mensajes tengan el z-index correcto */
+.mensaje-controles,
+.mensaje-caida,
+.mensaje-victoria {
+    z-index: 10001 !important;
+}
+
+/* ========== MODALES DEL JUEGO ========== */
+.modal-overlay-juego {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: var(--z-index-modal);
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Contenedor padre para todas las modales */
+.modal-contenedor-padre {
+    width: 100%;
+    height: 100%;
+    max-width: 1200px;
+    max-height: 900px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+/* Animación para modales */
+@keyframes modalAppear {
+    from {
+        opacity: 0;
+        transform: scale(0.8) translateY(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* ========== MODAL DE INICIO ========== */
+.modal-inicio-juego {
+    background-image: url('../../img/Modal_divertirse_o_capacitarse.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    animation: modalAppear var(--transition-lenta);
+}
+
+.modal-contenido-inicio-juego {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    padding-bottom: 15%;
+}
+
+/* Botones del Modal de Inicio */
+.boton-instrucciones-modal {
+    border: none;
+    background: transparent;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    cursor: pointer;
+    transition: all var(--transition-media);
+    position: absolute;
+}
+
+.boton-instrucciones-modal:hover {
+    transform: scale(1.1);
+    filter: brightness(1.2);
+}
+
+.boton-instrucciones-modal:active {
+    transform: scale(0.95);
+}
+
+.boton-jugar-modal {
+    background-image: url('../../img/Boton_Inicio_Jugar.png');
+    position: absolute;
+    width: 20%;
+    height: 8%;
+    left: 40%;
+    bottom: 40%;
+}
+
+.boton-capacitarse-modal {
+    background-image: url('../../img/Boton_Modal_Capacitarse.png');
+    position: absolute;
+    width: 25%;
+    height: 20%;
+    left: 37.5%;
+    bottom: 22%;
+}
+
+/* ========== MODAL DE CAPACITARSE ========== */
+.modal-capacitarse {
+    background-image: url('../../img/Modal_capacitarse_fondo_.png');
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 60%;
+    height: 100%;
+    position: relative;
+    animation: modalAppear var(--transition-lenta);
+}
+
+.modal-contenido-capacitarse {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    padding-bottom: 25%;
+}
+
+/* Imagen de Estrellas */
+.imagen-estrellas-superior {
+    width: 200px;
+    height: 80px;
+    background-image: url('../../img/Estrellas-6-0.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    margin-bottom: 400px;
+}
+
+/* ========== CAMBIO CRÍTICO: CONTENEDOR DE BOTONES EN 1 LÍNEA ========== */
+/* Contenedor para los 6 botones de capacitarse - AHORA EN 1 SOLA LÍNEA */
+.botones-capacitarse-container {
+    display: flex; /* Cambiado de grid a flex */
+    flex-wrap: nowrap; /* Evitar que se rompa en varias líneas */
+    justify-content: center; /* Centrar horizontalmente */
+    align-items: center; /* Centrar verticalmente */
+    gap: 15px; /* Espacio entre botones reducido */
+    margin: 0px 0;
+    width: 95%; /* Aumentado para acomodar 6 botones */
+    max-width: 900px; /* Aumentado para 6 botones */
+    margin-bottom: 50px;
+}
+
+/* Botones de capacitarse */
+.boton-capacitarse-item {
+    border: none;
+    background: transparent;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    cursor: pointer;
+    transition: all var(--transition-media);
+    width: 80px; /* Ligeramente reducido para caber 6 en línea */
+    height: 80px; /* Ligeramente reducido para caber 6 en línea */
+    border-radius: 12px;
+    flex-shrink: 0; /* Evitar que se encojan los botones */
+}
+
+.boton-capacitarse-item:hover {
+    transform: scale(1.15);
+    filter: brightness(1.2);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.boton-capacitarse-item:active {
+    transform: scale(0.95);
+}
+
+/* Botones específicos - AHORA 6 BOTONES */
+.boton-capacitarse-1 {
+    background-image: url('../../img/Icono_capacitarse_documento.png');
+}
+
+.boton-capacitarse-2 {
+    background-image: url('../../img/Icono_capacitarse_video.png');
+}
+
+.boton-capacitarse-3 {
+    background-image: url('../../img/Icono_capacitarse_documento.png');
+}
+
+.boton-capacitarse-4 {
+    background-image: url('../../img/Icono_capacitarse_video.png');
+}
+
+.boton-capacitarse-5 {
+    background-image: url('../../img/Icono_capacitarse_video.png');
+}
+
+.boton-capacitarse-6 {
+    background-image: url('../../img/Icono_capacitarse_final.png');
+}
+
+/* Barra de progreso */
+.barra-progreso-container {
+    width: 80%;
+    max-width: 700px;
+    margin: 20px 0px;
+}
+
+.barra-progreso-fondo {
+    width: 100%;
+    height: 25px;
+    background-color: #FFDB4A;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+    border: 2px solid #004DCB;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.barra-progreso-carga {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(90deg, #00A8FB, #004DCB);
+    border-radius: 10px;
+    transition: width 2s ease-in-out;
+    position: relative;
+}
+
+/* Botón salir del modal de capacitarse */
+.boton-salir-capacitarse {
+    background-image: url('../../img/Boton_Inicio_Salir.png');
+    border: none;
+    background-color: transparent;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    cursor: pointer;
+    transition: all var(--transition-media);
+    width: 200px;
+    height: 100px;
+    margin-bottom: 50px;
+}
+
+.boton-salir-capacitarse:hover {
+    transform: scale(1.1);
+    filter: brightness(1.2);
+}
+
+.boton-salir-capacitarse:active {
+    transform: scale(0.95);
+}
+
+/* ========== MODAL DE CAPACITARSE NIVEL 1 - Cartilla de Bienvenida ========== */
+.modal-capacitarse-1 {
+    background-image: url('../../img/Modal_capacitarse_fondo_documento.png');
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    animation: modalAppear var(--transition-lenta);
+}
+
+.modal-contenido-capacitarse-1 {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    padding-bottom: 25%;
+}
+
+/* Imagen de Estrellas para Nivel 1 */
+.imagen-estrellas-1 {
+    width: 200px;
+    height: 80px;
+    background-image: url('../../img/Estrellas-6-1.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    margin-bottom: 80px;
+}
+
+/* ESTILOS PARA LA IMAGEN DEL MANUAL EN MODAL 1 */
+.imagen-manual-container_1 {
+    width: 250px;
+    height: 300px;
+    margin-bottom: 30px;
+    cursor: pointer;
+    transition: transform var(--transition-media);
+    background-image: url('../../img/PDF_Bienvenido_Coopcentral.jpg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    border-radius: 10px;
+}
+
+.imagen-manual-container_1:hover {
+    transform: scale(1.05);
+    filter: brightness(1.1);
+}
+
+.imagen-manual-container_1:active {
+    transform: scale(0.95);
+}
+
+/* Botón siguiente nivel del modal de capacitarse 1 */
+.boton-siguiente-nivel-capacitarse-1 {
+    background-image: url('../../img/Boton_Modal_Siguiente_Nivel.png');
+    border: none;
+    background-color: transparent;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    cursor: pointer;
+    transition: all var(--transition-media);
+    width: 300px;
+    height: 100px;
+    margin-bottom: 50px;
+}
+
+.boton-siguiente-nivel-capacitarse-1:hover {
+    transform: scale(1.1);
+    filter: brightness(1.2);
+}
+
+.boton-siguiente-nivel-capacitarse-1:active {
+    transform: scale(0.95);
+}
+
+/* ========== MODAL CAPACITARSE 2 - VIDEO CARTILLA DE BIENVENIDA -- Su Guia Coopcentral ========== */
+.modal-capacitarse-2 {
+    background-image: url('../../img/Modal_capacitarse_fondo_video.png');
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    animation: modalAppear var(--transition-lenta);
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.modal-contenido-capacitarse-2 {
+    position: absolute;
+    top: 3%;
+    left: 3%;
+    width: 94%;
+    height: 94%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    padding-top: 0%;
+}
+
+/* CONTENEDOR DE VIDEO MEJORADO */
+.contenedor-video-local {
+    width: 85%;
+    max-width: 800px;
+    margin: 20px 0;
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    background: #000;
+    border: 3px solid #fff;
+    flex: 1;
+    min-height: 100px;
+    display: flex;
+    flex-direction: column;
+}
+
+.video-local {
+    width: 100%;
+    height: 100%;
+    min-height: 300px;
+    display: block;
+    border: none;
+    outline: none;
+    flex: 1;
+}
+
+/* CONTENEDOR DE INFORMACIÓN MEJORADO */
+.contenedor-info-video {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 90%;
+    max-width: 850px;
+}
+
+/* Imagen de estrellas encima del título */
+.imagen-estrellas-2 {
+    width: 180px;
+    height: 70px;
+    background-image: url('../../img/Estrellas-6-2.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    margin-bottom: 0px;
+}
+
+/* Título del video mejorado */
+.info-video {
+    text-align: center;
+    margin: 0;
+    color: #2c3e50;
+    font-family: 'Arial', sans-serif;
+    font-size: 20px;
+    font-weight: bold;
+    padding: 12px 20px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 8px;
+    border-left: 4px solid #004DCB;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+}
+
+/* CONTROLES MEJORADOS */
+.controles-video {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin: 0;
+    padding: 0;
+    border-radius: 30px;
+    width: 85%;
+    max-width: 800px;
+}
+
+/* Estados de carga del video */
+.contenedor-video-local.cargando::before {
+    content: 'Cargando video...';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    z-index: 2;
+}
+
+.contenedor-video-local.cargando::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 1;
+}
+
+/* Estados de visualización mejorados */
+.contenedor-video-local.reproduciendo {
+    box-shadow: 0 8px 25px rgba(0, 77, 203, 0.4);
+}
+
+.contenedor-video-local.pausado {
+    box-shadow: 0 8px 25px rgba(108, 117, 125, 0.4);
+}
+
+/* Controles personalizados para video */
+.boton-video {
+    border: none;
+    background: transparent;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    cursor: pointer;
+    transition: all var(--transition-media);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.95);
+    border: 2px solid rgba(0, 77, 203, 0.4);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.boton-video:hover {
+    transform: scale(1.1);
+    background-color: rgba(255, 255, 255, 1);
+    border-color: rgba(0, 77, 203, 0.6);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.boton-video:active {
+    transform: scale(0.95);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.boton-video:focus {
+    outline: none;
+    border-color: #004DCB;
+    box-shadow: 0 0 0 3px rgba(0, 77, 203, 0.3);
+}
+
+.boton-video:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: scale(1);
+}
+
+/* Estados específicos para cada botón */
+.boton-play-video {
+    background-image: url('../../img/Icono_play_audio.png');
+}
+
+.boton-pausa-video {
+    background-image: url('../../img/Icono_pausa_audio.png');
+}
+
+.boton-reiniciar-video {
+    background-image: url('../../img/Icono_reiniciar_audio.png');
+}
+
+/* Botones de navegación entre modales */
+.boton-navegacion-modal {
+    background-image: url('../../img/Boton_Modal_Siguiente_Nivel.png');
+    border: none;
+    background-color: transparent;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    cursor: pointer;
+    transition: all var(--transition-media);
+    width: 250px;
+    height: 50px;
+    margin-top: 0px;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+}
+
+.boton-navegacion-modal:hover {
+    transform: scale(1.05);
+    filter: brightness(1.15) drop-shadow(0 6px 12px rgba(0, 0, 0, 0.4));
+}
+
+.boton-navegacion-modal:active {
+    transform: scale(0.98);
+    filter: brightness(0.95) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+/* ========== MODAL DE CAPACITARSE NIVEL 3 - Guía Coopcentral ========== */
+.modal-capacitarse-3 {
+    background-image: url('../../img/Modal_capacitarse_fondo_documento_2.png');
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    animation: modalAppear var(--transition-lenta);
+}
+
+.modal-contenido-capacitarse-3 {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    padding-bottom: 25%;
+}
+
+/* Imagen de Estrellas para Nivel 3 */
+.imagen-estrellas-3 {
+    width: 200px;
+    height: 80px;
+    background-image: url('../../img/Estrellas-6-3.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    margin-bottom: 80px;
+}
+
+/* ESTILOS PARA LA IMAGEN DEL MANUAL EN MODAL 3 - Guía Coopcentral */
+.imagen-manual-container_3 {
+    width: 250px;
+    height: 300px;
+    margin-bottom: 30px;
+    cursor: pointer;
+    transition: transform var(--transition-media);
+    background-image: url('../../img/PDF_Guia_Coopcentral.jpg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    border-radius: 10px;
+}
+
+.imagen-manual-container_3:hover {
+    transform: scale(1.05);
+    filter: brightness(1.1);
+}
+
+.imagen-manual-container_3:active {
+    transform: scale(0.95);
+}
+
+/* Botón siguiente nivel del modal de capacitarse 3 */
+.boton-siguiente-nivel-capacitarse-3 {
+    background-image: url('../../img/Boton_Modal_Siguiente_Nivel.png');
+    border: none;
+    background-color: transparent;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    cursor: pointer;
+    transition: all var(--transition-media);
+    width: 300px;
+    height: 100px;
+    margin-bottom: 50px;
+}
+
+.boton-siguiente-nivel-capacitarse-3:hover {
+    transform: scale(1.1);
+    filter: brightness(1.2);
+}
+
+.boton-siguiente-nivel-capacitarse-3:active {
+    transform: scale(0.95);
+}
+
+/* ========== MODAL CAPACITARSE 4 - VIDEO CÁPSULA 1 ========== */
+.modal-capacitarse-4 {
+    background-image: url('../../img/Modal_capacitarse_fondo_video.png');
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    animation: modalAppear var(--transition-lenta);
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.modal-contenido-capacitarse-4 {
+    position: absolute;
+    top: 3%;
+    left: 3%;
+    width: 94%;
+    height: 94%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    padding-top: 0%;
+}
+
+/* Imagen de estrellas para Modal 4 */
+.imagen-estrellas-4 {
+    width: 180px;
+    height: 70px;
+    background-image: url('../../img/Estrellas-6-4.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    margin-bottom: 0px;
+}
+
+/* ========== MODAL CAPACITARSE 5 - VIDEO CÁPSULA 2 ========== */
+.modal-capacitarse-5 {
+    background-image: url('../../img/Modal_capacitarse_fondo_video.png');
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    animation: modalAppear var(--transition-lenta);
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.modal-contenido-capacitarse-5 {
+    position: absolute;
+    top: 3%;
+    left: 3%;
+    width: 94%;
+    height: 94%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    padding-top: 0%;
+}
+
+/* Imagen de estrellas para Modal 5 */
+.imagen-estrellas-5 {
+    width: 180px;
+    height: 70px;
+    background-image: url('../../img/Estrellas-6-5.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    margin-bottom: 0px;
+}
+
+/* ========== MODAL DE CAPACITARSE NIVEL 6 - FINAL ========== */
+.modal-capacitarse-6 {
+    background-image: url('../../img/Modal_capacitarse_fondo_final.png');
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    animation: modalAppear var(--transition-lenta);
+}
+
+.modal-contenido-capacitarse-6 {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    padding-bottom: 25%;
+}
+
+/* Imagen de Estrellas para Nivel 6 */
+.imagen-estrellas-6 {
+    width: 200px;
+    height: 80px;
+    background-image: url('../../img/Estrellas-6-6.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    margin-bottom: 410px;
+}
+
+/* Botón siguiente mundo del modal de capacitarse 6 */
+.boton-siguiente-mundo-6 {
+    background-image: url('../../img/Boton_Modal_Siguiente_Mundo.png');
+    border: none;
+    background-color: transparent;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    cursor: pointer;
+    transition: all var(--transition-media);
+    width: 300px;
+    height: 100px;
+    margin-bottom: 50px;
+    position: relative;
+}
+
+.boton-siguiente-mundo-6:hover {
+    transform: scale(1.1);
+    filter: brightness(1.2);
+}
+
+.boton-siguiente-mundo-6:active {
+    transform: scale(0.95);
+}
+
+/* ============================================= */
+/* RESPONSIVIDAD MEJORADA - TODA AL FINAL       */
+/* ============================================= */
+
+/* ========== RESPONSIVIDAD PARA 1600px ========== */
+@media (max-width: 1600px) { 
+    .Mundo-1-1 {
+        width: 160px;
+        height: 160px;
+    }
+    
+    .banner-juego {
+        width: 300px;
+        height: 150px;
+    }
+
+    .boton-reiniciar {
+        width: 60px;
+        height: 60px;
+        bottom: 1px;
+        left: calc(51% - 120px);
+    }
+
+    .boton-home {
+        width: 55px;
+        height: 55px;
+        bottom: 5px;
+        left: calc(55.5% - 120px);
+    }
+    
+    .boton-salir {
+        width: 55px;
+        height: 55px;
+        bottom: 5px;
+        left: calc(60% - 120px);
+    }
+
+    .personaje-jugador {
+        position: absolute;
+        top: 34%;
+        left: 10px;
+        width: 150px;
+        height: 200px;
+    }
+
+    /* ========== MODAL DE CAPACITARSE ========== */
+    .modal-capacitarse {
+        width: 65%;
+    }
+
+    .imagen-estrellas-superior {
+        width: 400px;
+        height: 100px;
+        margin-bottom: 260px;
+    }
+
+    /* Ajuste para pantallas medianas: mantener 6 botones pero más compactos */
+    .botones-capacitarse-container {
+        gap: 12px;
+        width: 95%;
+        max-width: 850px;
+        margin-bottom: 0px;
+    }
+
+    .boton-capacitarse-item {
+        width: 75px;
+        height: 75px;
+    }
+
+    .barra-progreso-container {
+        width: 70%;
+        margin-bottom: 20px;
+    }
+
+    .boton-salir-capacitarse {
+        width: 150px;
+        height: 80px;
+        margin-bottom: 50px;
+    }
+
+    /* ========== RESPONSIVIDAD PARA MODAL 1 ========== */
+    .modal-capacitarse-1 {
+        width: 55%;
+        height: 100%;
+    }
+
+    .imagen-estrellas-1 {
+        width: 400px;
+        height: 100px;
+        margin-bottom: 50px;
+    }
+
+    .imagen-manual-container_1 {
+        width: 200px;
+        height: 300px;
+        margin-bottom: 0px;
+    }
+
+    .boton-siguiente-nivel-capacitarse-1 {
+        width: 300px;
+        height: 100px;
+        margin-bottom: 20px;
+    }
+
+    /* ========== RESPONSIVIDAD PARA MODAL 2 ========== */
+    .modal-capacitarse-2 {
+        width: 50%;
+        height: 100%;
+    }
+
+    .modal-contenido-capacitarse-2 {
+        position: absolute;
+        top: 3%;
+        left: 3%;
+        width: 94%;
+        height: 94%;
+        padding-top: 0%;
+    }
+
+    /* CONTENEDOR DE VIDEO MEJORADO */
+    .contenedor-video-local {
+        width: 100%;
+        max-width: 500px;
+        margin: 20px 0;
+    }
+
+    .video-local {
+        width: 100%;
+        height: 60%;
+        min-height: 20px;
+    }
+
+    /* Imagen de estrellas encima del título */
+    .imagen-estrellas-2 {
+        width: 180px;
+        height: 70px;
+        margin-bottom: 0px;
+    }
+
+    /* Título del video mejorado */
+    .info-video {
+        width: 60%;
+        font-size: 18px;
+    }
+
+    /* Controles personalizados para video */
+    .boton-video {
+        width: 40px;
+        height: 40px;
+    }
+
+    /* ========== RESPONSIVIDAD PARA MODAL 3 ========== */
+    .modal-capacitarse-3 {
+        width: 55%;
+        height: 100%;
+    }
+
+    .imagen-estrellas-3 {
+        width: 400px;
+        height: 100px;
+        margin-bottom: 50px;
+    }
+
+    .imagen-manual-container_3 {
+        width: 200px;
+        height: 300px;
+        margin-bottom: 0px;
+    }
+
+    .boton-siguiente-nivel-capacitarse-3 {
+        width: 300px;
+        height: 100px;
+        margin-bottom: 20px;
+    }
+
+    /* ========== RESPONSIVIDAD PARA MODAL 4 ========== */
+    .modal-capacitarse-4 {
+        width: 50%;
+        height: 100%;
+    }
+
+    .modal-contenido-capacitarse-4 {
+        position: absolute;
+        top: 3%;
+        left: 3%;
+        width: 94%;
+        height: 94%;
+        padding-top: 0%;
+    }
+
+    .imagen-estrellas-4 {
+        width: 160px;
+        height: 60px;
+        margin-bottom: 10px;
+    }
+
+    /* ========== RESPONSIVIDAD PARA MODAL 5 ========== */
+    .modal-capacitarse-5 {
+        width: 50%;
+        height: 100%;
+    }
+
+    .modal-contenido-capacitarse-5 {
+        position: absolute;
+        top: 3%;
+        left: 3%;
+        width: 94%;
+        height: 94%;
+        padding-top: 0%;
+    }
+
+    .imagen-estrellas-5 {
+        width: 160px;
+        height: 60px;
+        margin-bottom: 10px;
+    }
+
+    /* ========== RESPONSIVIDAD PARA MODAL 6 ========== */
+    .modal-capacitarse-6 {
+        width: 60%;
+        height: 100%;
+    }
+
+    /* Imagen de Estrellas para Nivel 6 */
+    .imagen-estrellas-6 {
+        margin-bottom: 340px;
+    }
+}
