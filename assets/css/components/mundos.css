@@ -317,8 +317,8 @@ button[class*="Mundo-"] {
 /* ESTILOS PARA ELEMENTOS ADICIONALES */
 /* ============================================= */
 
-/* Banner BBC */
-.Logo_BBC_banner {
+/* Banner BCC */
+.Logo_BCC_banner {
     position: absolute;
     left: 50%;
     top: 95%;
@@ -327,7 +327,7 @@ button[class*="Mundo-"] {
     max-width: 1400px;
     min-width: 100px;
     height: 100%;
-    background-image: url('../../img/Logo_BBC_banner.png');
+    background-image: url('../../img/Logo_BCC_banner.png');
     background-size: contain;
     background-position: center center;
     background-repeat: no-repeat;
@@ -387,7 +387,7 @@ button[class*="Mundo-"] {
         min-width: 70px;
     }
     
-    .Logo_BBC_banner {
+    .Logo_BCC_banner {
         width: 42%;
         height: 60%;
     }
@@ -399,7 +399,7 @@ button[class*="Mundo-"] {
         min-width: 60px;
     }
     
-    .Logo_BBC_banner {
+    .Logo_BCC_banner {
         width: 45%;
         height: 55%;
     }
@@ -430,7 +430,7 @@ button[class*="Mundo-"] {
         min-width: 50px;
     }
     
-    .Logo_BBC_banner {
+    .Logo_BCC_banner {
         width: 50%;
         height: 50%;
     }

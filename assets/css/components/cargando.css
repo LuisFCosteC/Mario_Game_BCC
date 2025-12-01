@@ -18,8 +18,8 @@
     background-repeat: no-repeat;
 }
 
-/* BBC Bandera */
-.BBC-bandera {
+/* BCC Bandera */
+.BCC-bandera {
     position: absolute;
     left: 50%;
     top: 85%;
@@ -28,7 +28,7 @@
     max-width: 300px;
     min-width: 150px;
     height: 15%;
-    background-image: url('../../img/Logo_BBC_bandera.png');
+    background-image: url('../../img/Logo_BCC_bandera.png');
     background-size: contain;
     background-position: center center;
     background-repeat: no-repeat;
@@ -156,7 +156,7 @@
         top: 8%;
     }
     
-    .BBC-bandera {
+    .BCC-bandera {
         width: 18%;
         top: 85%;
     }
@@ -180,7 +180,7 @@
         top: 7%;
     }
     
-    .BBC-bandera {
+    .BCC-bandera {
         width: 20%;
         top: 55%;
     }
@@ -205,7 +205,7 @@
         top: 5%;
     }
     
-    .BBC-bandera {
+    .BCC-bandera {
         width: 25%;
         top: 52%;
     }

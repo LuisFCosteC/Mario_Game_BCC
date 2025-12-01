@@ -4,8 +4,8 @@ Mario_Game_BCC/
 ├── mundos-juego-1.html
 ├── index.html
 ├── cargando.html
-├── .gitignore                                      # Control de versiones adecuado
-├── assets/                                         # Estructura clara para recursos estáticos
+├── .gitignore
+├── assets/
 │   ├── audios/
 │   ├── css/
 │   │   ├── style.css
