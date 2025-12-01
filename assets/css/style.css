@@ -60,3 +60,60 @@ body {
     align-items: center;
     justify-content: center;
 }
+
+/* ========== MENSAJES DE ERROR DE AUDIO ========== */
+.mensaje-error-audio {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #ff6b6b;
+    color: white;
+    padding: 15px;
+    border-radius: 8px;
+    max-width: 300px;
+    z-index: 10000;
+    border: 2px solid #dc3545;
+    font-family: Arial, sans-serif;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    animation: slideInRight 0.3s ease-out;
+}
+
+.mensaje-error-audio code {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: monospace;
+    display: block;
+    margin: 5px 0;
+    overflow-x: auto;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* ========== CONTROLES DE AUDIO (DEBUG) ========== */
+.controles-audio-debug {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 10px;
+    border-radius: 8px;
+    font-family: monospace;
+    font-size: 12px;
+    z-index: 9999;
+    display: none; /* Oculto por defecto */
+}
+
+.controles-audio-debug.mostrar {
+    display: block;
+}

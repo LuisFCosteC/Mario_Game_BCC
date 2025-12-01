@@ -1,4 +1,4 @@
-// assets/js/mundo-juego-1.js
+// assets/js/mundo-juego-1.js - VERSIÓN COMPLETA CON AUDIO MANAGER
 
 class MundoJuego1 {
     constructor() {
@@ -19,7 +19,7 @@ class MundoJuego1 {
         // Sistema de obstáculos
         this.colisionando = false;
         
-        // Sistema de estrella - NUEVO
+        // Sistema de estrella
         this.configEstrella = null;
         
         this.init();
@@ -42,6 +42,9 @@ class MundoJuego1 {
             this.configurarEventListenersGlobales();
             this.inicializado = true;
             
+            // Iniciar audio de fondo si no está ya iniciado
+            this.iniciarAudioFondo();
+            
             // DEPURACIÓN: Verificar elementos de mensajes
             setTimeout(() => {
                 this.depurarElementosMensajes();
@@ -51,6 +54,22 @@ class MundoJuego1 {
         } catch (error) {
             console.error('❌ Error al inicializar Mundo Juego 1:', error);
             this.mostrarErrorInicializacion();
+        }
+    }
+
+    /**
+     * Inicia el audio de fondo si el AudioManager está disponible
+     */
+    iniciarAudioFondo() {
+        if (window.audioManager && !window.audioManager.estaReproduciendo) {
+            // Esperar un momento para asegurar que el DOM esté listo
+            setTimeout(() => {
+                window.audioManager.iniciarReproduccion().catch(error => {
+                    console.warn('⚠️ Audio de fondo no se pudo iniciar automáticamente:', error);
+                });
+            }, 500);
+        } else if (window.audioManager) {
+            console.log('🎵 Audio de fondo ya está reproduciéndose');
         }
     }
 
@@ -178,7 +197,7 @@ class MundoJuego1 {
             console.log('🚧 Obstáculos desactivados');
         }
         
-        // Configurar estado de la estrella - NUEVO
+        // Configurar estado de la estrella
         if (this.seccionActual === 2 && this.configEstrella) {
             this.configEstrella.activo = true;
             this.reiniciarEstrella(); // Reiniciar estado al cambiar a sección 2
@@ -282,7 +301,7 @@ class MundoJuego1 {
         // Inicializar sistemas adicionales
         this.inicializarDeteccionHueco();
         this.inicializarDeteccionObstaculos();
-        this.inicializarDeteccionEstrella(); // NUEVO: Sistema de estrella
+        this.inicializarDeteccionEstrella();
         this.ajustarPosicionVerticalPersonaje();
         this.agregarIndicadorHueco();
 
@@ -316,7 +335,7 @@ class MundoJuego1 {
     }
 
     /**
-     * Inicializa la detección de la estrella - NUEVO MÉTODO
+     * Inicializa la detección de la estrella
      */
     inicializarDeteccionEstrella() {
         console.log('⭐ Inicializando detección de estrella...');
@@ -358,7 +377,7 @@ class MundoJuego1 {
     }
 
     /**
-     * Verifica si el personaje puede recoger la estrella - NUEVO MÉTODO
+     * Verifica si el personaje puede recoger la estrella
      */
     verificarEstrella() {
         // Solo verificar en sección 2, si no ha sido recogida y si está activa
@@ -412,7 +431,7 @@ class MundoJuego1 {
     }
 
     /**
-     * Maneja la recolección de la estrella - NUEVO MÉTODO
+     * Maneja la recolección de la estrella
      */
     recogerEstrella() {
         this.configEstrella.recogida = true;
@@ -445,7 +464,7 @@ class MundoJuego1 {
      * Muestra mensaje de colisión con obstáculo
      */
     mostrarMensajeColision() {
-        const mensaje = document.querySelector('.mensaje-caida'); // Reutilizamos el mensaje de caída
+        const mensaje = document.querySelector('.mensaje-caida');
         if (mensaje) {
             mensaje.textContent = '¡Oh no! Chocaste con un obstáculo';
             mensaje.style.display = 'block';
@@ -469,10 +488,10 @@ class MundoJuego1 {
     }
 
     /**
-     * Muestra mensaje de recolección de estrella - NUEVO MÉTODO
+     * Muestra mensaje de recolección de estrella
      */
     mostrarMensajeEstrella() {
-        const mensaje = document.querySelector('.mensaje-caida'); // Reutilizamos el mismo contenedor
+        const mensaje = document.querySelector('.mensaje-caida');
         if (mensaje) {
             mensaje.textContent = '⭐ ¡Encontraste un documento importante!';
             mensaje.style.display = 'block';
@@ -504,7 +523,7 @@ class MundoJuego1 {
     }
 
     /**
-     * Reproduce sonido de estrella (placeholder) - NUEVO MÉTODO
+     * Reproduce sonido de estrella (placeholder)
      */
     reproducirSonidoEstrella() {
         console.log('🔊 Reproduciendo sonido de estrella');
@@ -512,7 +531,7 @@ class MundoJuego1 {
     }
 
     /**
-     * Reinicia el personaje a la posición inicial (sección 1) - ACTUALIZADO
+     * Reinicia el personaje a la posición inicial (sección 1)
      */
     reiniciarAPosicionInicial() {
         console.log('🔄 Reiniciando personaje a posición inicial...');
@@ -526,12 +545,12 @@ class MundoJuego1 {
         // Reactivar controles
         this.configMovimiento.enSuelo = true;
         
-        // Reiniciar estrella - NUEVO
+        // Reiniciar estrella
         this.reiniciarEstrella();
     }
 
     /**
-     * Reinicia el estado de la estrella - NUEVO MÉTODO
+     * Reinicia el estado de la estrella
      */
     reiniciarEstrella() {
         if (this.configEstrella) {
@@ -746,7 +765,7 @@ class MundoJuego1 {
     }
 
     /**
-     * Bucle de animación principal - ACTUALIZADO con verificación de estrella
+     * Bucle de animación principal
      */
     iniciarBucleAnimacion() {
         const animar = () => {
@@ -755,7 +774,7 @@ class MundoJuego1 {
                 this.aplicarGravedad();
                 this.verificarHueco();
                 this.verificarObstaculos();
-                this.verificarEstrella(); // NUEVO: Verificar estrella
+                this.verificarEstrella();
                 this.verificarMeta();
                 this.actualizarPosicionPersonaje();
             }
@@ -982,13 +1001,16 @@ class MundoJuego1 {
         localStorage.setItem('mundo1Completado', 'true');
         console.log('✅ Mundo 1 completado - Progreso guardado');
         
+        // Asegurarse de restaurar volumen antes de redirigir
+        this.restaurarVolumenDespuesDeModalVideo();
+        
         setTimeout(() => {
             window.location.href = 'mundos.html';
         }, 1000);
     }
 
     /**
-     * Muestra mensaje de controles CORREGIDO
+     * Muestra mensaje de controles
      */
     mostrarMensajeControles() {
         const mensaje = document.querySelector('.mensaje-controles');
@@ -1063,6 +1085,11 @@ class MundoJuego1 {
         const modal = this.crearElemento('div', 'modal-inicio-juego');
         const content = this.crearElemento('div', 'modal-contenido-inicio-juego');
         
+        // 🔥 AGREGADO: Imagen Estrella_Ganaste.png con animación
+        const estrellaGanaste = this.crearElemento('div', 'imagen-estrella-ganaste');
+        estrellaGanaste.setAttribute('aria-label', 'Estrella de victoria animada');
+        estrellaGanaste.setAttribute('title', '¡Ganaste!');
+        
         const botonJugarModal = this.crearBoton(
             'boton-instrucciones-modal boton-jugar-modal',
             'Jugar en modo divertirse',
@@ -1075,6 +1102,8 @@ class MundoJuego1 {
             'Capacitarse'
         );
         
+        // Agregar elementos al contenido en el orden correcto
+        content.appendChild(estrellaGanaste); // Estrella primero (debajo del botón visualmente)
         content.appendChild(botonJugarModal);
         content.appendChild(botonCapacitarseModal);
         modal.appendChild(content);
@@ -1091,7 +1120,7 @@ class MundoJuego1 {
         });
         
         this.modalAbierto = overlay;
-        console.log('🎮 Modal de inicio mostrado');
+        console.log('🎮 Modal de inicio mostrado con estrella animada');
     }
 
     mostrarModalCapacitarse(overlayAnterior = null) {
@@ -1187,7 +1216,6 @@ class MundoJuego1 {
 
     /** =======================================================================================================================================
      * Muestra el modal de capacitación 1 - Cartilla de Bienvenida (PDF Bienvenido Coopcentral)
-     * =======================================================================================================================================
      */
     mostrarModalCapacitarse1(overlayAnterior = null) {
         if (overlayAnterior) {
@@ -1241,7 +1269,6 @@ class MundoJuego1 {
 
     /** =======================================================================================================================================
     * Muestra el modal de capacitación 2 - CARTILLA DE BIENVENIDA -- Su Guia Coopcentral
-    * =========================================================================================================================================
     */
     mostrarModalCapacitarse2(overlayAnterior = null) {
         if (overlayAnterior) {
@@ -1251,7 +1278,7 @@ class MundoJuego1 {
         const overlay = this.crearOverlay();
         const modalContenedorPadre = overlay.querySelector('.modal-contenedor-padre');
         const modal = this.crearElemento('div', 'modal-capacitarse-2');
-        const content = this.crearElemento('div', 'modal-contenido-capacitarse-2'); // CORREGIDO: clase correcta
+        const content = this.crearElemento('div', 'modal-contenido-capacitarse-2');
         
         const imagenEstrellas = this.crearElemento('div', 'imagen-estrellas-2');
         
@@ -1272,6 +1299,9 @@ class MundoJuego1 {
         video.controls = true;
         video.preload = 'metadata';
         video.setAttribute('aria-label', 'Video de CARTILLA DE BIENVENIDA -- Su Guia Coopcentral');
+        
+        // Configurar control de audio para este video
+        this.configurarControlAudioVideo(video);
         
         // Barra de progreso del video
         const barraProgresoVideo = this.crearElemento('div', 'barra-progreso-video');
@@ -1454,7 +1484,6 @@ class MundoJuego1 {
 
     /** =======================================================================================================================================
      * Muestra el modal de capacitación 3 - Guía Coopcentral (Duplicado de modal 1 con modificaciones)
-     * =======================================================================================================================================
      */
     mostrarModalCapacitarse3(overlayAnterior = null) {
         if (overlayAnterior) {
@@ -1511,7 +1540,6 @@ class MundoJuego1 {
 
     /** =======================================================================================================================================
      * Muestra el modal de capacitación 4 - Video Capsula 1 Seguridad y Salud en el Trabajo
-     * =======================================================================================================================================
      */
     mostrarModalCapacitarse4(overlayAnterior = null) {
         if (overlayAnterior) {
@@ -1521,7 +1549,7 @@ class MundoJuego1 {
         const overlay = this.crearOverlay();
         const modalContenedorPadre = overlay.querySelector('.modal-contenedor-padre');
         const modal = this.crearElemento('div', 'modal-capacitarse-4');
-        const content = this.crearElemento('div', 'modal-contenido-capacitarse-4'); // CORREGIDO: clase específica
+        const content = this.crearElemento('div', 'modal-contenido-capacitarse-4');
         
         const imagenEstrellas = this.crearElemento('div', 'imagen-estrellas-4');
         
@@ -1542,6 +1570,9 @@ class MundoJuego1 {
         video.controls = true;
         video.preload = 'metadata';
         video.setAttribute('aria-label', 'Video de Capsula 1 Seguridad y Salud en el Trabajo');
+        
+        // Configurar control de audio para este video
+        this.configurarControlAudioVideo(video);
         
         // Barra de progreso del video
         const barraProgresoVideo = this.crearElemento('div', 'barra-progreso-video');
@@ -1622,7 +1653,6 @@ class MundoJuego1 {
 
     /** =======================================================================================================================================
      * Muestra el modal de capacitación 5 - Video Capsula 2 Seguridad y Salud en el Trabajo
-     * =======================================================================================================================================
      */
     mostrarModalCapacitarse5(overlayAnterior = null) {
         if (overlayAnterior) {
@@ -1632,7 +1662,7 @@ class MundoJuego1 {
         const overlay = this.crearOverlay();
         const modalContenedorPadre = overlay.querySelector('.modal-contenedor-padre');
         const modal = this.crearElemento('div', 'modal-capacitarse-5');
-        const content = this.crearElemento('div', 'modal-contenido-capacitarse-5'); // CORREGIDO: clase específica
+        const content = this.crearElemento('div', 'modal-contenido-capacitarse-5');
         
         const imagenEstrellas = this.crearElemento('div', 'imagen-estrellas-5');
         
@@ -1653,6 +1683,9 @@ class MundoJuego1 {
         video.controls = true;
         video.preload = 'metadata';
         video.setAttribute('aria-label', 'Video de Capsula 2 Seguridad y Salud en el Trabajo');
+        
+        // Configurar control de audio para este video
+        this.configurarControlAudioVideo(video);
         
         // Barra de progreso del video
         const barraProgresoVideo = this.crearElemento('div', 'barra-progreso-video');
@@ -1733,7 +1766,6 @@ class MundoJuego1 {
 
     /** =======================================================================================================================================
      * Muestra el modal de capacitación 6 - Final
-     * =======================================================================================================================================
      */
     mostrarModalCapacitarse6(overlayAnterior = null) {
         if (overlayAnterior) {
@@ -1772,6 +1804,82 @@ class MundoJuego1 {
         
         this.modalAbierto = overlay;
         console.log('🏆 Modal de capacitación nivel 6 (Final) mostrado');
+    }
+
+    // ==========================================================================================
+    // CONTROL DE AUDIO PARA VIDEOS/PODCASTS - NUEVOS MÉTODOS
+    // ==========================================================================================
+
+    /**
+     * Configura el control de audio para elementos de video
+     */
+    configurarControlAudioVideo(videoElement) {
+        if (!videoElement || !window.audioManager) {
+            console.warn('⚠️ No se puede configurar control de audio: videoElement o audioManager no disponible');
+            return;
+        }
+        
+        // Reducir volumen cuando el video comience a reproducirse
+        videoElement.addEventListener('play', () => {
+            if (window.audioManager && !window.audioManager.estaEnVideo) {
+                window.audioManager.reducirVolumenParaVideo();
+                console.log('🔈 Volumen reducido al 40% para reproducción de video');
+            }
+        });
+        
+        // Restaurar volumen cuando el video se pause
+        videoElement.addEventListener('pause', () => {
+            if (window.audioManager && window.audioManager.estaEnVideo) {
+                window.audioManager.restaurarVolumenNormal();
+                console.log('🔊 Volumen restaurado al 100% después de pausar video');
+            }
+        });
+        
+        // Restaurar volumen cuando el video termine
+        videoElement.addEventListener('ended', () => {
+            if (window.audioManager && window.audioManager.estaEnVideo) {
+                window.audioManager.restaurarVolumenNormal();
+                console.log('🔊 Volumen restaurado al 100% después de finalizar video');
+            }
+        });
+        
+        // Restaurar volumen si hay error en el video
+        videoElement.addEventListener('error', () => {
+            if (window.audioManager && window.audioManager.estaEnVideo) {
+                window.audioManager.restaurarVolumenNormal();
+                console.log('⚠️ Error en video - Volumen restaurado al 100%');
+            }
+        });
+        
+        // También restaurar si el usuario abandona el modal
+        videoElement.addEventListener('abort', () => {
+            if (window.audioManager && window.audioManager.estaEnVideo) {
+                window.audioManager.restaurarVolumenNormal();
+                console.log('🔊 Volumen restaurado al 100% (abort)');
+            }
+        });
+        
+        console.log('🎵 Control de audio configurado para el video');
+    }
+
+    /**
+     * Reducir volumen para modal de video (método manual)
+     */
+    reducirVolumenParaModalVideo() {
+        if (window.audioManager) {
+            window.audioManager.reducirVolumenParaVideo();
+            console.log('🔈 Volumen manualmente reducido al 40%');
+        }
+    }
+
+    /**
+     * Restaurar volumen después de modal de video (método manual)
+     */
+    restaurarVolumenDespuesDeModalVideo() {
+        if (window.audioManager) {
+            window.audioManager.restaurarVolumenNormal();
+            console.log('🔊 Volumen manualmente restaurado al 100%');
+        }
     }
 
     // ==========================================================================================
@@ -1819,6 +1927,13 @@ class MundoJuego1 {
 
     cerrarModal(modal) {
         if (modal && modal.parentNode) {
+            // Si se cierra un modal de video, restaurar volumen
+            const video = modal.querySelector('video');
+            if (video && window.audioManager && window.audioManager.estaEnVideo) {
+                window.audioManager.restaurarVolumenNormal();
+                console.log('🔊 Volumen restaurado al 100% al cerrar modal de video');
+            }
+            
             document.body.removeChild(modal);
             this.modalAbierto = null;
             console.log('🔒 Modal cerrado');
@@ -1833,6 +1948,7 @@ class MundoJuego1 {
 
     mostrarErrorInicializacion() {
         console.error('💥 Error crítico en la inicialización del juego');
+        // Podrías mostrar un modal de error aquí
     }
 
     pausarMedios() {
@@ -1843,11 +1959,21 @@ class MundoJuego1 {
                 video.pause();
             }
         });
+        
+        // Pausar audio de fondo si está reproduciéndose
+        if (window.audioManager && window.audioManager.estaReproduciendo) {
+            window.audioManager.pausar();
+        }
     }
 
     destruir() {
         this.cerrarModalActual();
         this.pausarMedios();
+        
+        // Restaurar volumen antes de destruir
+        if (window.audioManager && window.audioManager.estaEnVideo) {
+            window.audioManager.restaurarVolumenNormal();
+        }
         
         this.audioPlayer = null;
         this.videoIframe = null;
@@ -1863,7 +1989,33 @@ class MundoJuego1 {
 
 document.addEventListener('DOMContentLoaded', function() {
     try {
-        window.mundoJuego1 = new MundoJuego1();
+        // Esperar a que el AudioManager se cargue si no está disponible
+        if (!window.audioManager) {
+            console.log('⏳ Esperando AudioManager...');
+            
+            // Crear un intento de espera para el AudioManager
+            const esperarAudioManager = setInterval(() => {
+                if (window.audioManager) {
+                    clearInterval(esperarAudioManager);
+                    inicializarJuego();
+                }
+            }, 100);
+            
+            // Timeout por si el AudioManager nunca se carga
+            setTimeout(() => {
+                if (!window.audioManager) {
+                    console.warn('⚠️ AudioManager no se cargó, inicializando juego sin audio');
+                    inicializarJuego();
+                }
+            }, 3000);
+        } else {
+            inicializarJuego();
+        }
+        
+        function inicializarJuego() {
+            window.mundoJuego1 = new MundoJuego1();
+            console.log('🚀 Mundo Juego 1 cargado exitosamente');
+        }
         
         window.addEventListener('beforeunload', function() {
             if (window.mundoJuego1) {
@@ -1871,12 +2023,12 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
 
-        console.log('🚀 Mundo Juego 1 cargado exitosamente');
     } catch (error) {
         console.error('💥 Error fatal al cargar Mundo Juego 1:', error);
     }
 });
 
+// Manejo de errores globales
 window.addEventListener('error', function(e) {
     console.error('🚨 Error global en Mundo Juego 1:', e.error);
 });
@@ -1884,3 +2036,60 @@ window.addEventListener('error', function(e) {
 window.addEventListener('unhandledrejection', function(e) {
     console.error('🚨 Promesa rechazada en Mundo Juego 1:', e.reason);
 });
+
+// Función para debug del audio (útil desde consola)
+window.debugAudio = function() {
+    if (window.audioManager) {
+        console.log('🔧 DEBUG DE AUDIO:');
+        console.log('- Reproduciendo:', window.audioManager.estaReproduciendo);
+        console.log('- En video:', window.audioManager.estaEnVideo);
+        console.log('- Volumen actual:', Math.round(window.audioManager.audioElement?.volume * 100) + '%');
+        console.log('- Audio pausado:', window.audioManager.audioElement?.paused);
+        
+        // Mostrar controles de debug
+        const debugDiv = document.createElement('div');
+        debugDiv.className = 'controles-audio-debug mostrar';
+        debugDiv.innerHTML = `
+            <div style="margin-bottom: 10px;">
+                <strong>🔊 Debug Audio</strong>
+                <button onclick="window.audioManager.reducirVolumenParaVideo()" style="margin: 5px; padding: 5px;">Reducir a 40%</button>
+                <button onclick="window.audioManager.restaurarVolumenNormal()" style="margin: 5px; padding: 5px;">Restaurar a 100%</button>
+                <button onclick="window.audioManager.pausar()" style="margin: 5px; padding: 5px;">Pausar</button>
+                <button onclick="window.audioManager.reanudar()" style="margin: 5px; padding: 5px;">Reanudar</button>
+            </div>
+            <div>
+                Estado: ${window.audioManager.estaReproduciendo ? '▶️ Reproduciendo' : '⏸️ Pausado'}<br>
+                Modo video: ${window.audioManager.estaEnVideo ? '🔈 40%' : '🔊 100%'}<br>
+                Volumen: ${Math.round(window.audioManager.audioElement?.volume * 100)}%
+            </div>
+        `;
+        debugDiv.style.cssText = `
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 12px;
+            z-index: 9999;
+            max-width: 300px;
+        `;
+        
+        // Remover si ya existe
+        const existente = document.querySelector('.controles-audio-debug');
+        if (existente) existente.remove();
+        
+        document.body.appendChild(debugDiv);
+        
+        // Auto-remover después de 10 segundos
+        setTimeout(() => {
+            if (debugDiv.parentNode) {
+                debugDiv.parentNode.removeChild(debugDiv);
+            }
+        }, 10000);
+    } else {
+        console.error('❌ AudioManager no disponible');
+    }
+};

@@ -18,6 +18,7 @@ Mario_Game_BCC/
 │   │   └── Estructura de las carpetas.txt
 │   ├── img/
 │   ├── js/
+│   │   ├── audio-manager.js
 │   │   ├── cargando.js
 │   │   ├── inicio.js
 │   │   ├── mundo-juego-1.js

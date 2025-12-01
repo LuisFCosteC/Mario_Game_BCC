@@ -755,6 +755,78 @@ body.pagina-mundo-juego {
     padding-bottom: 15%;
 }
 
+/* IMAGEN ESTRELLA GANASTE CON ANIMACIÓN */
+.imagen-estrella-ganaste {
+    position: absolute;
+    background-image: url('../../img/Estrella_Ganaste.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 120px;
+    height: 120px;
+    left: 45%;
+    top: 45%; /* Posición inicial arriba del botón de jugar */
+    z-index: 1;
+    animation: movimientoEstrella 6s ease-in-out infinite;
+    pointer-events: none; /* No interfiere con los clics */
+    opacity: 0.9;
+    filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.7));
+}
+
+/* Animación personalizada: sube izquierda → baja → sube derecha */
+@keyframes movimientoEstrella {
+    0% {
+        transform: translate(0, 0) scale(1) rotate(0deg);
+        opacity: 0.9;
+    }
+    20% {
+        transform: translate(-100px, -80px) scale(1.1) rotate(-15deg);
+        opacity: 1;
+    }
+    40% {
+        transform: translate(0, 0) scale(1) rotate(0deg);
+        opacity: 0.9;
+    }
+    60% {
+        transform: translate(0, -30px) scale(1.05) rotate(0deg);
+        opacity: 0.95;
+    }
+    80% {
+        transform: translate(100px, -80px) scale(1.1) rotate(15deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(0, 0) scale(1) rotate(0deg);
+        opacity: 0.9;
+    }
+}
+
+/* Efecto de brillo adicional */
+.imagen-estrella-ganaste::after {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    background: radial-gradient(circle, rgba(255,255,200,0.3) 0%, transparent 70%);
+    border-radius: 50%;
+    opacity: 0.5;
+    z-index: -1;
+    animation: brilloEstrella 3s ease-in-out infinite alternate;
+}
+
+@keyframes brilloEstrella {
+    0%, 100% {
+        opacity: 0.3;
+        transform: scale(0.9);
+    }
+    50% {
+        opacity: 0.7;
+        transform: scale(1.1);
+    }
+}
+
 /* Botones del Modal de Inicio */
 .boton-instrucciones-modal {
     border: none;
@@ -1510,7 +1582,35 @@ body.pagina-mundo-juego {
 
     /* ========== MODAL DE CAPACITARSE ========== */
     .modal-capacitarse {
-        width: 65%;
+        width: 50%;
+    }
+
+    .imagen-estrella-ganaste {
+        width: 150px;
+        height: 150px;
+        left: 44%;
+        top: 30%;
+    }
+    
+    @keyframes movimientoEstrella {
+        0% {
+            transform: translate(0, 0) scale(1) rotate(0deg);
+        }
+        20% {
+            transform: translate(-80px, -60px) scale(1.1) rotate(-15deg);
+        }
+        40% {
+            transform: translate(0, 0) scale(1) rotate(0deg);
+        }
+        60% {
+            transform: translate(0, -20px) scale(1.05) rotate(0deg);
+        }
+        80% {
+            transform: translate(80px, -60px) scale(1.1) rotate(15deg);
+        }
+        100% {
+            transform: translate(0, 0) scale(1) rotate(0deg);
+        }
     }
 
     .imagen-estrellas-superior {
