@@ -476,7 +476,7 @@ body.pagina-mundo-juego {
 /* Imágenes específicas para cada obstáculo */
 .obstaculo-1 {
     background-image: url('../../img/obstaculo-1.png');
-    left: 25%; /* Posición horizontal en la sección 2 */
+    left: 20%; /* Posición horizontal en la sección 2 */
 }
 
 .obstaculo-2 {
@@ -485,12 +485,12 @@ body.pagina-mundo-juego {
 }
 
 /* ========== ESTRELLA DOCUMENTO ========== */
-.Estrella_Documento {
+.Estrella_Documento-1 {
     position: absolute;
-    top: 15%; /* Posicionada más arriba para requerir salto */
-    left: 45%; /* Entre los dos obstáculos */
-    width: 70px;
-    height: 70px;
+    top: 10%; /* Posicionada más arriba para requerir salto */
+    left: 75%; /* Posición central en la sección 1 */
+    width: 80px;
+    height: 80px;
     background-image: url('../../img/Estrella_Documento.png');
     background-size: contain;
     background-repeat: no-repeat;
@@ -502,15 +502,99 @@ body.pagina-mundo-juego {
     animation: flotarEstrella 3s ease-in-out infinite;
 }
 
-/* Mostrar estrella solo en sección activa */
-.seccion-2.activa .Estrella_Documento {
+/* Estrella_Video-1 en Sección 2 */
+.Estrella_Video-1 {
+    position: absolute;
+    top: 10%; /* Posición similar a la primera estrella */
+    left: 45%; /* Posición en sección 2 */
+    width: 80px;
+    height: 80px;
+    background-image: url('../../img/Estrella_Video.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    z-index: calc(var(--z-index-camino) + 5);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+    animation: flotarEstrella 3s ease-in-out infinite;
+}
+
+/* Estrella_Documento-2 en Sección 3 */
+.Estrella_Documento-2 {
+    position: absolute;
+    top: 10%;
+    left: 30%; /* Primera estrella en sección 3 */
+    width: 80px;
+    height: 80px;
+    background-image: url('../../img/Estrella_Documento.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    z-index: calc(var(--z-index-camino) + 5);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+    animation: flotarEstrella 3s ease-in-out infinite;
+}
+
+/* Estrella_Video-2 en Sección 3 */
+.Estrella_Video-2 {
+    position: absolute;
+    top: 10%;
+    left: 70%; /* Segunda estrella en sección 3 */
+    width: 80px;
+    height: 80px;
+    background-image: url('../../img/Estrella_Video.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    z-index: calc(var(--z-index-camino) + 5);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+    animation: flotarEstrella 3s ease-in-out infinite;
+}
+
+/* Estrella_Video-3 en Sección 4 */
+.Estrella_Video-3 {
+    position: absolute;
+    top: 10%;
+    left: 50%; /* Estrella en sección 4 */
+    width: 80px;
+    height: 80px;
+    background-image: url('../../img/Estrella_Video.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    z-index: calc(var(--z-index-camino) + 5);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+    animation: flotarEstrella 3s ease-in-out infinite;
+}
+
+/* Mostrar estrella solo en sección */
+.seccion-1.activa .Estrella_Documento-1,
+.seccion-2.activa .Estrella_Video-1,
+.seccion-3.activa .Estrella_Documento-2,
+.seccion-3.activa .Estrella_Video-2,
+.seccion-4.activa .Estrella_Video-3 {
     opacity: 1;
     pointer-events: auto;
 }
 
 /* Ocultar estrella en otras secciones */
-.seccion-mundo:not(.seccion-2) .Estrella_Documento,
-.seccion-2:not(.activa) .Estrella_Documento {
+.seccion-mundo:not(.seccion-1) .Estrella_Documento-1,
+.seccion-1:not(.activa) .Estrella_Documento-1,
+.seccion-mundo:not(.seccion-2) .Estrella_Video-1,
+.seccion-mundo:not(.seccion-3) .Estrella_Documento-2,
+.seccion-mundo:not(.seccion-3) .Estrella_Video-2,
+.seccion-mundo:not(.seccion-4) .Estrella_Video-3,
+.seccion-2:not(.activa) .Estrella_Video-1,
+.seccion-3:not(.activa) .Estrella_Documento-2,
+.seccion-3:not(.activa) .Estrella_Video-2,
+.seccion-4:not(.activa) .Estrella_Video-3 {
     opacity: 0 !important;
     pointer-events: none !important;
 }
@@ -526,7 +610,7 @@ body.pagina-mundo-juego {
 }
 
 /* Efecto de brillo para la estrella */
-.Estrella_Documento::before {
+.Estrella_Documento-1::before {
     content: '';
     position: absolute;
     top: -10px;
@@ -540,8 +624,37 @@ body.pagina-mundo-juego {
     z-index: -1;
 }
 
-.Estrella_Documento:hover::before {
+.Estrella_Documento-1:hover::before {
     opacity: 1;
+}
+
+/* Asegurar que todas las estrellas tengan la misma animación y efectos */
+.Estrella_Documento-2,
+.Estrella_Video-1,
+.Estrella_Video-2,
+.Estrella_Video-3 {
+    /* ... estilos existentes ... */
+    animation: flotarEstrella 3s ease-in-out infinite !important;
+    transition: opacity 0.3s ease-in-out !important;
+    cursor: pointer !important;
+}
+
+/* Efecto hover para todas las estrellas */
+.Estrella_Documento-2:hover,
+.Estrella_Video-1:hover,
+.Estrella_Video-2:hover,
+.Estrella_Video-3:hover {
+    transform: scale(1.1) !important;
+    filter: brightness(1.2) !important;
+}
+
+/* Mostrar estrellas solo en su sección activa */
+.seccion-2.activa .Estrella_Video-1,
+.seccion-3.activa .Estrella_Documento-2,
+.seccion-3.activa .Estrella_Video-2,
+.seccion-4.activa .Estrella_Video-3 {
+    opacity: 1 !important;
+    pointer-events: auto !important;
 }
 
 /* ========== MENSAJES OCULTOS POR DEFECTO ========== */
@@ -1665,6 +1778,10 @@ body.pagina-mundo-juego {
         width: 300px;
         height: 100px;
         margin-bottom: 20px;
+    }
+
+    .Estrella_Documento-1 {
+        top: 4%;
     }
 
     /* ========== RESPONSIVIDAD PARA MODAL 2 ========== */

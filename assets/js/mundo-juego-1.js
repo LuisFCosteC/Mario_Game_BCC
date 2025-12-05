@@ -1,4 +1,4 @@
-// assets/js/mundo-juego-1.js - VERSIÓN COMPLETA CON AUDIO MANAGER
+// assets/js/mundo-juego-1.js
 
 class MundoJuego1 {
     constructor() {
@@ -197,11 +197,19 @@ class MundoJuego1 {
             console.log('🚧 Obstáculos desactivados');
         }
         
-        // Configurar estado de la estrella
-        if (this.seccionActual === 2 && this.configEstrella) {
+        // 🔥 CAMBIO: Estrella en sección 1 - Si no fue recogida, mostrarla
+        if (this.seccionActual === 1 && this.configEstrella) {
             this.configEstrella.activo = true;
-            this.reiniciarEstrella(); // Reiniciar estado al cambiar a sección 2
-            console.log('⭐ Estrella activada en sección 2');
+            
+            // Mostrar u ocultar según si ya fue recogida
+            const estrella = document.getElementById('Estrella_Documento-1');
+            if (estrella && !this.configEstrella.recogida) {
+                estrella.style.opacity = '1';
+                estrella.style.pointerEvents = 'auto';
+                console.log('⭐ Estrella_Documento-1 visible - Esperando contacto');
+            } else if (this.configEstrella.recogida) {
+                console.log('⭐ Estrella_Documento-1 ya recogida - Permanecerá oculta');
+            }
         } else if (this.configEstrella) {
             this.configEstrella.activo = false;
             console.log('⭐ Estrella desactivada');
@@ -210,10 +218,10 @@ class MundoJuego1 {
         // Configuraciones específicas por sección
         switch(this.seccionActual) {
             case 1:
-                console.log('🎯 Sección 1: Hueco activo');
+                console.log('🎯 Sección 1: Hueco y Estrella (documento) activos');
                 break;
             case 2:
-                console.log('🎯 Sección 2: Obstáculos y estrella activos');
+                console.log('🎯 Sección 2: Obstáculos activos');
                 break;
             case 3:
                 console.log('🎯 Sección 3: Sin elementos especiales');
@@ -271,12 +279,19 @@ class MundoJuego1 {
 
         // Configuración del movimiento MEJORADA
         this.configMovimiento = {
-            velocidad: 8, 
+            velocidad: 6, 
             velocidadSalto: 15,
             gravedad: 0.8,
             enSuelo: true,
             saltando: false,
             velocidadY: 0,
+            
+            // 🔥 NUEVO: Sistema de doble salto
+            saltosRealizados: 0,        // Contador de saltos realizados
+            maxSaltos: 2,              // Máximo 2 saltos (doble salto)
+            puedeSaltarDeNuevo: true,  // Control para evitar saltos continuos
+            tiempoEntreSaltos: 200,    // Tiempo mínimo entre saltos (ms)
+            
             posicion: {
                 x: 10,
                 y: 0
@@ -285,7 +300,6 @@ class MundoJuego1 {
                 izquierda: 0,
                 derecha: window.innerWidth - 150,
                 piso: 38,
-                // UMBRAL MÁS SENSIBLE: 90% del ancho de la pantalla
                 umbralCambioSeccion: window.innerWidth * 0.90
             }
         };
@@ -318,38 +332,48 @@ class MundoJuego1 {
     }
 
     /**
-     * Inicializa la detección de obstáculos
+     * CORREGIDO: Inicializa la detección de obstáculos con posiciones ajustadas al CSS
      */
     inicializarDeteccionObstaculos() {
-        console.log('🚧 Inicializando detección de obstáculos...');
+        console.log('🚧 Inicializando detección de obstáculos con posiciones CSS coordinadas...');
         
         this.configObstaculos = {
-            activo: this.seccionActual === 2, // Solo activo en sección 2
+            activo: this.seccionActual === 2,
             obstaculos: [
-                { id: 'obstaculo-1', posicion: { inicio: 28, fin: 32 } }, // 28% a 32%
-                { id: 'obstaculo-2', posicion: { inicio: 58, fin: 62 } }  // 58% a 62%
+                // AJUSTADO: Coordinar con CSS donde left: 20% y width: 80px
+                { 
+                    id: 'obstaculo-1', 
+                    // CSS: left: 20%, width: 80px (≈5% en pantalla 1600px)
+                    posicion: { inicio: 18, fin: 20 } // Más preciso: 20% a 25%
+                },
+                // AJUSTADO: Coordinar con CSS donde left: 70% y width: 80px
+                { 
+                    id: 'obstaculo-2', 
+                    // CSS: left: 70%, width: 80px (≈5% en pantalla 1600px)
+                    posicion: { inicio: 68, fin: 70 } // Más preciso: 70% a 75%
+                }
             ]
         };
         
-        console.log('📍 Obstáculos configurados:', this.configObstaculos.obstaculos);
+        console.log('📍 Obstáculos configurados con posiciones CSS:', this.configObstaculos.obstaculos);
     }
 
     /**
-     * Inicializa la detección de la estrella
+     * Inicializa la detección de la estrella - Con posición exacta del CSS
      */
     inicializarDeteccionEstrella() {
-        console.log('⭐ Inicializando detección de estrella...');
+        console.log('⭐ Inicializando detección de Estrella_Documento-1 con posición CSS...');
         
+        // 🔥 COORDINAR CON CSS EXACTO: top: 10%, left: 75%
         this.configEstrella = {
-            activo: this.seccionActual === 2, // Solo activo en sección 2
-            posicion: { 
-                x: { inicio: 43, fin: 47 }, // 43% a 47%
-                y: { inicio: 30, fin: 40 }  // 30% a 40% (más arriba para requerir salto)
-            },
-            recogida: false
+            activo: this.seccionActual === 1,
+            // Posición exacta del CSS: left: 75%, top: 10%
+            recogida: false,
+            elementoId: 'Estrella_Documento-1',
+            modalObjetivo: 1 // Modal 1 (Cartilla de Bienvenida)
         };
         
-        console.log('📍 Estrella configurada en posición:', this.configEstrella.posicion);
+        console.log('📍 Estrella_Documento-1 configurada con posición CSS: left 75%, top 10%');
     }
 
     /**
@@ -377,28 +401,75 @@ class MundoJuego1 {
     }
 
     /**
-     * Verifica si el personaje puede recoger la estrella
+     * Verifica si el personaje puede tocar la estrella - ACTUALIZADO PARA USAR RECTÁNGULOS REALES
      */
     verificarEstrella() {
-        // Solo verificar en sección 2, si no ha sido recogida y si está activa
+        // Solo verificar en sección 1, si no ha sido recogida y si está activa
         if (!this.configEstrella || !this.configEstrella.activo || 
-            this.seccionActual !== 2 || this.configEstrella.recogida) {
+            this.seccionActual !== 1 || this.configEstrella.recogida) {
             return;
         }
         
-        const posXPorcentaje = (this.configMovimiento.posicion.x / window.innerWidth) * 100;
-        const posYPorcentaje = (this.configMovimiento.posicion.y / window.innerHeight) * 100;
+        // Obtener posición real del personaje usando getBoundingClientRect
+        const jugadorRect = this.personaje.getBoundingClientRect();
+        const estrellaElement = document.getElementById('Estrella_Documento-1');
+        
+        if (!estrellaElement) {
+            console.error('❌ Elemento Estrella_Documento-1 no encontrado');
+            return;
+        }
+        
+        // Obtener posición real de la estrella
+        const estrellaRect = estrellaElement.getBoundingClientRect();
+        
+        // Calcular colisión usando rectángulos reales
+        const colisionX = jugadorRect.right > estrellaRect.left && 
+                        jugadorRect.left < estrellaRect.right;
+        const colisionY = jugadorRect.bottom > estrellaRect.top && 
+                        jugadorRect.top < estrellaRect.bottom;
         
         // Verificar colisión con la estrella (solo cuando está saltando)
-        if (this.configMovimiento.saltando && 
-            posXPorcentaje >= this.configEstrella.posicion.x.inicio && 
-            posXPorcentaje <= this.configEstrella.posicion.x.fin &&
-            posYPorcentaje >= this.configEstrella.posicion.y.inicio && 
-            posYPorcentaje <= this.configEstrella.posicion.y.fin) {
-            
-            console.log('⭐ ¡Has recogido la estrella!');
-            this.recogerEstrella();
+        if (this.configMovimiento.saltando && colisionX && colisionY) {
+            console.log('⭐ ¡Has tocado la estrella en sección 1!');
+            this.tocarEstrella();
         }
+    }
+
+    /**
+     * Maneja cuando el personaje toca la estrella - Ahora abre modal 1 y mantiene posición
+     */
+    tocarEstrella() {
+        // Marcar como recogida para evitar múltiples activaciones
+        this.configEstrella.recogida = true;
+        
+        // 🔥 CAMBIO: Ocultar la estrella visualmente usando el ID correcto
+        const estrella = document.getElementById('Estrella_Documento-1');
+        if (estrella) {
+            estrella.style.opacity = '0';
+            estrella.style.pointerEvents = 'none';
+            console.log('👁️ Estrella_Documento-1 ocultada visualmente');
+        } else {
+            console.error('❌ No se encontró el elemento Estrella_Documento-1');
+        }
+        
+        // 🔥 IMPORTANTE: NO reiniciar posición del personaje
+        // El personaje se mantiene donde está
+        
+        // Aplicar animación de recolección al personaje
+        this.personaje.classList.add('recogiendo-estrella');
+        
+        // Mostrar mensaje de éxito
+        this.mostrarMensajeEstrellaRecogida();
+        
+        // Reproducir sonido de estrella
+        this.reproducirSonidoEstrella();
+        
+        // 🔥 CAMBIO CRÍTICO: Abrir modal 1 después de un breve delay
+        setTimeout(() => {
+            this.personaje.classList.remove('recogiendo-estrella');
+            this.mostrarModalCapacitarse1(); // Modal 1
+            console.log('📖 Modal 1 activado por contacto con estrella en sección 1');
+        }, 600);
     }
 
     /**
@@ -431,36 +502,6 @@ class MundoJuego1 {
     }
 
     /**
-     * Maneja la recolección de la estrella
-     */
-    recogerEstrella() {
-        this.configEstrella.recogida = true;
-        
-        // Aplicar animación de recolección al personaje
-        this.personaje.classList.add('recogiendo-estrella');
-        
-        // Ocultar la estrella visualmente
-        const estrella = document.getElementById('Estrella_Documento');
-        if (estrella) {
-            estrella.style.opacity = '0';
-            estrella.style.pointerEvents = 'none';
-        }
-        
-        // Mostrar mensaje de éxito
-        this.mostrarMensajeEstrella();
-        
-        // Reproducir sonido de estrella
-        this.reproducirSonidoEstrella();
-        
-        // Después de la animación, mostrar el modal 1
-        setTimeout(() => {
-            this.personaje.classList.remove('recogiendo-estrella');
-            this.mostrarModalCapacitarse1();
-            console.log('📖 Modal 1 activado por recolección de estrella');
-        }, 600);
-    }
-
-    /**
      * Muestra mensaje de colisión con obstáculo
      */
     mostrarMensajeColision() {
@@ -490,10 +531,10 @@ class MundoJuego1 {
     /**
      * Muestra mensaje de recolección de estrella
      */
-    mostrarMensajeEstrella() {
+    mostrarMensajeEstrellaRecogida() {
         const mensaje = document.querySelector('.mensaje-caida');
         if (mensaje) {
-            mensaje.textContent = '⭐ ¡Encontraste un documento importante!';
+            mensaje.textContent = '⭐ ¡Documento encontrado! Abriendo información...';
             mensaje.style.display = 'block';
             
             // Forzar reflow para que la transición funcione
@@ -510,7 +551,23 @@ class MundoJuego1 {
                 }, 500);
             }, 2000);
             
-            console.log('⭐ Mensaje de estrella mostrado');
+            console.log('⭐ Mensaje de estrella recogida mostrado');
+        }
+    }
+
+    /**
+     * Resetea la estrella para que reaparezca (útil para reinicios completos)
+     */
+    resetearEstrella() {
+        if (this.configEstrella) {
+            this.configEstrella.recogida = false;
+            
+            const estrella = document.getElementById('Estrella_Documento-1');
+            if (estrella) {
+                estrella.style.opacity = '1';
+                estrella.style.pointerEvents = 'auto';
+                console.log('🔄 Estrella_Documento-1 reseteada y visible');
+            }
         }
     }
 
@@ -531,7 +588,7 @@ class MundoJuego1 {
     }
 
     /**
-     * Reinicia el personaje a la posición inicial (sección 1)
+     * Reinicia el personaje a la posición inicial - MODIFICADO
      */
     reiniciarAPosicionInicial() {
         console.log('🔄 Reiniciando personaje a posición inicial...');
@@ -545,8 +602,16 @@ class MundoJuego1 {
         // Reactivar controles
         this.configMovimiento.enSuelo = true;
         
-        // Reiniciar estrella
-        this.reiniciarEstrella();
+        // 🔥 NUEVO: Resetear estados de salto
+        this.configMovimiento.saltosRealizados = 0;
+        this.configMovimiento.puedeSaltarDeNuevo = true;
+        
+        // 🔥 NO REINICIAR LA ESTRELLA - Se mantiene oculta si ya fue recogida
+        if (this.configEstrella && this.configEstrella.recogida) {
+            console.log('⭐ Estrella ya recogida - No se reinicia');
+        }
+        
+        console.log('✅ Personaje reiniciado en sección 1 con saltos reseteados');
     }
 
     /**
@@ -556,11 +621,14 @@ class MundoJuego1 {
         if (this.configEstrella) {
             this.configEstrella.recogida = false;
             
-            // Mostrar la estrella visualmente
-            const estrella = document.getElementById('Estrella_Documento');
+            // 🔥 CAMBIO: Mostrar la estrella visualmente usando el ID correcto
+            const estrella = document.getElementById('Estrella_Documento-1');
             if (estrella) {
                 estrella.style.opacity = '1';
                 estrella.style.pointerEvents = 'auto';
+                console.log('👁️ Estrella_Documento-1 mostrada visualmente');
+            } else {
+                console.error('❌ No se encontró el elemento Estrella_Documento-1');
             }
             
             console.log('🔄 Estado de la estrella reiniciado');
@@ -599,11 +667,23 @@ class MundoJuego1 {
     }
 
     /**
-     * Configura eventos de teclado con cambio de imágenes
+     * Configura eventos de teclado con prevención de auto-repeat
      */
     configurarEventosTeclado() {
+        // 🔥 NUEVO: Bandera para controlar el auto-repeat
+        let teclaArribaPresionada = false;
+        
         document.addEventListener('keydown', (e) => {
             if (this.teclas.hasOwnProperty(e.key)) {
+                // 🔥 CRÍTICO: Prevenir el auto-repeat en la tecla de salto
+                if (e.key === 'ArrowUp') {
+                    if (teclaArribaPresionada) {
+                        // Si ya está presionada, ignorar el evento (auto-repeat)
+                        return;
+                    }
+                    teclaArribaPresionada = true;
+                }
+                
                 this.teclas[e.key] = true;
                 e.preventDefault();
                 this.actualizarAparienciaPersonaje();
@@ -615,6 +695,11 @@ class MundoJuego1 {
                 this.teclas[e.key] = false;
                 e.preventDefault();
                 this.actualizarAparienciaPersonaje();
+                
+                // 🔥 NUEVO: Resetear bandera cuando se suelta la tecla
+                if (e.key === 'ArrowUp') {
+                    teclaArribaPresionada = false;
+                }
             }
         });
 
@@ -624,7 +709,19 @@ class MundoJuego1 {
             }
         });
 
-        console.log('⌨️ Eventos de teclado configurados');
+        console.log('⌨️ Eventos de teclado configurados con prevención de auto-repeat');
+    }
+
+    /**
+     * Muestra información de debug sobre el estado de los saltos
+     */
+    debugSaltos() {
+        console.log('🔍 === DEBUG SALTOS ===');
+        console.log(`Saltos realizados: ${this.configMovimiento.saltosRealizados}/${this.configMovimiento.maxSaltos}`);
+        console.log(`Puede saltar de nuevo: ${this.configMovimiento.puedeSaltarDeNuevo}`);
+        console.log(`En suelo: ${this.configMovimiento.enSuelo}`);
+        console.log(`Saltando: ${this.configMovimiento.saltando}`);
+        console.log('🔚 === FIN DEBUG ===');
     }
 
     /**
@@ -648,7 +745,7 @@ class MundoJuego1 {
     }
 
     /**
-     * Procesa el movimiento con detección de final de sección
+     * Procesa el movimiento con control de salto mejorado - 
      */
     procesarMovimiento() {
         // Movimiento izquierda
@@ -688,25 +785,63 @@ class MundoJuego1 {
             );
         }
         
-        // Salto (solo si está en el suelo)
-        if (this.teclas.ArrowUp && this.configMovimiento.enSuelo && !this.configMovimiento.saltando) {
-            this.iniciarSalto();
+        // 🔥 : Control de salto con límite de 2 saltos
+        // Solo permite saltar si la tecla está presionada y puede saltar
+        if (this.teclas.ArrowUp) {
+            // Verificar condiciones para saltar
+            const puedeSaltar = (
+                this.configMovimiento.saltosRealizados < this.configMovimiento.maxSaltos &&
+                this.configMovimiento.puedeSaltarDeNuevo &&
+                !this.configMovimiento.saltando // Evita saltar mientras ya está saltando
+            );
+            
+            if (puedeSaltar) {
+                this.iniciarSalto();
+                
+                // 🔥 IMPORTANTE: Marcar que la tecla ya fue procesada para este salto
+                // Esto evita que se siga saltando mientras se mantiene presionada
+                this.teclas.ArrowUp = false;
+            }
         }
     }
 
     /**
-     * Inicia el salto con cambio de imagen
+     * Inicia el salto con control de doble salto
      */
     iniciarSalto() {
+        // 🔥 NUEVO: Verificar si puede saltar (máximo 2 saltos)
+        if (this.configMovimiento.saltosRealizados >= this.configMovimiento.maxSaltos) {
+            console.log('⚠️ Límite de saltos alcanzado (máximo 2)');
+            return;
+        }
+        
+        // 🔥 NUEVO: Verificar si puede saltar de nuevo (evitar saltos rápidos)
+        if (!this.configMovimiento.puedeSaltarDeNuevo) {
+            console.log('⚠️ Espera para saltar de nuevo');
+            return;
+        }
+        
+        // Incrementar contador de saltos
+        this.configMovimiento.saltosRealizados++;
+        
+        // Aplicar lógica del salto
         this.configMovimiento.saltando = true;
         this.configMovimiento.enSuelo = false;
         this.configMovimiento.velocidadY = -this.configMovimiento.velocidadSalto;
+        
+        // 🔥 NUEVO: Bloquear saltos rápidos
+        this.configMovimiento.puedeSaltarDeNuevo = false;
+        
+        // Restaurar capacidad de salto después de un tiempo
+        setTimeout(() => {
+            this.configMovimiento.puedeSaltarDeNuevo = true;
+        }, this.configMovimiento.tiempoEntreSaltos);
         
         // Aplicar imagen de salto
         this.personaje.classList.remove('derecha', 'izquierda');
         this.personaje.classList.add('arriba', 'saltando');
         
-        console.log('🦘 Personaje saltando');
+        console.log(`🦘 Salto ${this.configMovimiento.saltosRealizados}/${this.configMovimiento.maxSaltos}`);
         
         setTimeout(() => {
             this.personaje.classList.remove('saltando');
@@ -729,14 +864,19 @@ class MundoJuego1 {
                 this.configMovimiento.enSuelo = true;
                 this.configMovimiento.saltando = false;
                 
+                // 🔥 CRÍTICO: Resetear contador de saltos cuando toca el suelo
+                this.configMovimiento.saltosRealizados = 0;
+                this.configMovimiento.puedeSaltarDeNuevo = true;
+                
                 this.personaje.classList.add('cayendo');
                 setTimeout(() => {
                     this.personaje.classList.remove('cayendo');
                 }, 300);
+                
+                console.log('🏁 Tocó el suelo - Saltos reseteados');
             }
         }
     }
-
     /**
      * Actualiza la posición visual del personaje
      */
@@ -748,7 +888,7 @@ class MundoJuego1 {
     }
 
     /**
-     * Reinicia la posición del personaje al inicio de la sección
+     * Reinicia la posición del personaje y estados de salto - MODIFICADO
      */
     reiniciarPosicionPersonaje() {
         // Posicionar temporalmente fuera de pantalla a la izquierda para la animación de entrada
@@ -758,10 +898,14 @@ class MundoJuego1 {
         this.configMovimiento.enSuelo = true;
         this.configMovimiento.saltando = false;
         
+        // 🔥 NUEVO: Resetear contador de saltos
+        this.configMovimiento.saltosRealizados = 0;
+        this.configMovimiento.puedeSaltarDeNuevo = true;
+        
         this.actualizarPosicionPersonaje();
         this.actualizarAparienciaPersonaje();
         
-        console.log(`🔄 Personaje reiniciado en sección ${this.seccionActual}`);
+        console.log(`🔄 Personaje reiniciado - Saltos reseteados`);
     }
 
     /**
@@ -786,18 +930,20 @@ class MundoJuego1 {
     }
 
     /**
-     * Inicializa detección de hueco
+     * CORREGIDO: Inicializa detección de hueco con posición ajustada al CSS
      */
     inicializarDeteccionHueco() {
-        console.log('🕳️ Inicializando detección de hueco...');
+        console.log('🕳️ Inicializando detección de hueco con posición CSS coordinada...');
         
         this.configHueco = {
-            inicio: 50,
-            fin: 55,
-            activo: this.seccionActual === 1 // Solo activo en sección 1
+            // AJUSTADO: Coordinar con CSS donde left: 50% y width: 9%
+            // Hueco va de 50% a 59% (50 + 9)
+            inicio: 49,   // Pequeño margen para mejor detección
+            fin: 50,      // Exacto: 50% + 9% = 59%
+            activo: this.seccionActual === 1
         };
         
-        console.log(`📍 Hueco configurado entre ${this.configHueco.inicio}% y ${this.configHueco.fin}% - Activo: ${this.configHueco.activo}`);
+        console.log(`📍 Hueco configurado entre ${this.configHueco.inicio}% y ${this.configHueco.fin}% (CSS: left 50%, width 9%)`);
     }
     
     /**
@@ -969,6 +1115,51 @@ class MundoJuego1 {
     }
 
     /**
+     * NUEVO: Método para forzar reinicio de posiciones (útil para debug)
+     */
+    reiniciarPosicionesElementos() {
+        console.log('🔄 Reiniciando posiciones de elementos...');
+        
+        // Reiniciar posición de obstáculos visualmente
+        const obstaculo1 = document.getElementById('obstaculo-1');
+        const obstaculo2 = document.getElementById('obstaculo-2');
+        
+        if (obstaculo1 && obstaculo2) {
+            // Verificar que las posiciones CSS se apliquen
+            const estilo1 = window.getComputedStyle(obstaculo1);
+            const estilo2 = window.getComputedStyle(obstaculo2);
+            
+            console.log('📍 Posiciones CSS actuales:');
+            console.log(`  - Obstáculo 1: left ${estilo1.left}, top ${estilo1.top}`);
+            console.log(`  - Obstáculo 2: left ${estilo2.left}, top ${estilo2.top}`);
+            
+            // Forzar reflow para asegurar que CSS se aplica
+            obstaculo1.offsetHeight;
+            obstaculo2.offsetHeight;
+        }
+        
+        // 🔥 CAMBIO: Reiniciar posición de estrella con nuevo ID
+        const estrella = document.getElementById('Estrella_Documento-1');
+        if (estrella) {
+            const estiloEstrella = window.getComputedStyle(estrella);
+            console.log(`  - Estrella_Documento-1: left ${estiloEstrella.left}, top ${estiloEstrella.top}`);
+            console.log(`  - width: ${estiloEstrella.width}, height: ${estiloEstrella.height}`);
+            console.log(`  - opacity: ${estiloEstrella.opacity}, display: ${estiloEstrella.display}`);
+            estrella.offsetHeight;
+        } else {
+            console.error('❌ Elemento Estrella_Documento-1 no encontrado');
+        }
+        
+        // Reiniciar posición de hueco
+        const hueco = document.querySelector('.hueco-peligro');
+        if (hueco) {
+            const estiloHueco = window.getComputedStyle(hueco);
+            console.log(`  - Hueco: left ${estiloHueco.left}, width ${estiloHueco.width}`);
+            hueco.offsetHeight;
+        }
+    }
+
+    /**
      * Reproduce sonido de caída (placeholder)
      */
     reproducirSonidoCaida() {
@@ -1044,7 +1235,17 @@ class MundoJuego1 {
 
     configurarBotonesNavegacion() {
         const botonesConfig = [
-            { selector: '.boton-reiniciar', action: () => location.reload(), desc: 'Reiniciar' },
+            { 
+                selector: '.boton-reiniciar', 
+                action: () => {
+                    // Resetear estrella antes de recargar
+                    if (window.mundoJuego1 && window.mundoJuego1.resetearEstrella) {
+                        window.mundoJuego1.resetearEstrella();
+                    }
+                    location.reload(); 
+                }, 
+                desc: 'Reiniciar juego' 
+            },
             { selector: '.boton-home', action: () => window.location.href = 'index.html', desc: 'Ir al inicio' },
             { selector: '.boton-salir', action: () => window.location.href = 'mundos.html', desc: 'Salir a mundos' }
         ];
@@ -1981,6 +2182,38 @@ class MundoJuego1 {
         
         console.log('🧹 Recursos del Mundo Juego 1 liberados');
     }
+
+    /**
+     * Función de debug para verificar la posición de la estrella en sección 1
+     */
+    debugEstrellaSeccion1() {
+        console.log('🔍 === DEBUG ESTRELLA_DOCUMENTO-1 SECCIÓN 1 ===');
+        console.log(`📍 Sección actual: ${this.seccionActual}`);
+        console.log(`⭐ Estrella activa: ${this.configEstrella?.activo}`);
+        console.log(`⭐ Estrella recogida: ${this.configEstrella?.recogida}`);
+        
+        const estrellaElement = document.getElementById('Estrella_Documento-1');
+        if (estrellaElement) {
+            const estilo = window.getComputedStyle(estrellaElement);
+            console.log(`🎨 CSS Estrella_Documento-1:`);
+            console.log(`   - left: ${estilo.left} (CSS: 75%)`);
+            console.log(`   - top: ${estilo.top} (CSS: 10%)`);
+            console.log(`   - opacity: ${estilo.opacity}`);
+            console.log(`   - display: ${estilo.display}`);
+            console.log(`   - width: ${estilo.width}, height: ${estilo.height}`);
+            
+            // Calcular posición real en porcentaje
+            const leftPx = parseFloat(estilo.left) || 0;
+            const topPx = parseFloat(estilo.top) || 0;
+            const leftPorcentaje = (leftPx / window.innerWidth) * 100;
+            const topPorcentaje = (topPx / window.innerHeight) * 100;
+            console.log(`   - left (≈%): ${leftPorcentaje.toFixed(1)}%`);
+            console.log(`   - top (≈%): ${topPorcentaje.toFixed(1)}%`);
+        } else {
+            console.error('❌ Elemento Estrella_Documento-1 no encontrado');
+        }
+        console.log('🔚 === FIN DEBUG ===');
+    }
 }
 
 // ==========================================================================================
@@ -2014,7 +2247,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         function inicializarJuego() {
             window.mundoJuego1 = new MundoJuego1();
-            console.log('🚀 Mundo Juego 1 cargado exitosamente');
+            console.log('🚀 Mundo Juego 1 cargado exitosamente con Estrella_Documento-1 modificada');
         }
         
         window.addEventListener('beforeunload', function() {
@@ -2037,59 +2270,219 @@ window.addEventListener('unhandledrejection', function(e) {
     console.error('🚨 Promesa rechazada en Mundo Juego 1:', e.reason);
 });
 
-// Función para debug del audio (útil desde consola)
-window.debugAudio = function() {
-    if (window.audioManager) {
-        console.log('🔧 DEBUG DE AUDIO:');
-        console.log('- Reproduciendo:', window.audioManager.estaReproduciendo);
-        console.log('- En video:', window.audioManager.estaEnVideo);
-        console.log('- Volumen actual:', Math.round(window.audioManager.audioElement?.volume * 100) + '%');
-        console.log('- Audio pausado:', window.audioManager.audioElement?.paused);
-        
-        // Mostrar controles de debug
-        const debugDiv = document.createElement('div');
-        debugDiv.className = 'controles-audio-debug mostrar';
-        debugDiv.innerHTML = `
-            <div style="margin-bottom: 10px;">
-                <strong>🔊 Debug Audio</strong>
-                <button onclick="window.audioManager.reducirVolumenParaVideo()" style="margin: 5px; padding: 5px;">Reducir a 40%</button>
-                <button onclick="window.audioManager.restaurarVolumenNormal()" style="margin: 5px; padding: 5px;">Restaurar a 100%</button>
-                <button onclick="window.audioManager.pausar()" style="margin: 5px; padding: 5px;">Pausar</button>
-                <button onclick="window.audioManager.reanudar()" style="margin: 5px; padding: 5px;">Reanudar</button>
-            </div>
-            <div>
-                Estado: ${window.audioManager.estaReproduciendo ? '▶️ Reproduciendo' : '⏸️ Pausado'}<br>
-                Modo video: ${window.audioManager.estaEnVideo ? '🔈 40%' : '🔊 100%'}<br>
-                Volumen: ${Math.round(window.audioManager.audioElement?.volume * 100)}%
-            </div>
-        `;
-        debugDiv.style.cssText = `
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 15px;
-            border-radius: 8px;
-            font-family: monospace;
-            font-size: 12px;
-            z-index: 9999;
-            max-width: 300px;
-        `;
-        
-        // Remover si ya existe
-        const existente = document.querySelector('.controles-audio-debug');
-        if (existente) existente.remove();
-        
-        document.body.appendChild(debugDiv);
-        
-        // Auto-remover después de 10 segundos
-        setTimeout(() => {
-            if (debugDiv.parentNode) {
-                debugDiv.parentNode.removeChild(debugDiv);
+// ==========================================================================================
+// HERRAMIENTAS DE DEBUG - Para usar en consola del navegador
+// ==========================================================================================
+
+/**
+ * Muestra información detallada de posiciones
+ */
+window.debugPosiciones = function() {
+    if (!window.mundoJuego1) {
+        console.error('❌ MundoJuego1 no está inicializado');
+        return;
+    }
+    
+    console.log('🔍 === DEBUG DE POSICIONES ===');
+    
+    // Posiciones configuradas en JS
+    console.log('📍 CONFIGURACIÓN JS:');
+    if (window.mundoJuego1.configHueco) {
+        console.log(`  Hueco: ${window.mundoJuego1.configHueco.inicio}% - ${window.mundoJuego1.configHueco.fin}%`);
+    }
+    
+    if (window.mundoJuego1.configObstaculos) {
+        window.mundoJuego1.configObstaculos.obstaculos.forEach((obs, i) => {
+            console.log(`  Obstáculo ${i+1}: ${obs.posicion.inicio}% - ${obs.posicion.fin}%`);
+        });
+    }
+    
+    if (window.mundoJuego1.configEstrella) {
+        console.log(`  Estrella_Documento-1 recogida: ${window.mundoJuego1.configEstrella.recogida}`);
+        console.log(`  Estrella_Documento-1 activa: ${window.mundoJuego1.configEstrella.activo}`);
+    }
+    
+    // Posiciones reales en CSS
+    console.log('🎨 POSICIONES CSS REALES:');
+    
+    const elementos = [
+        { id: 'hueco-peligro', nombre: 'Hueco' },
+        { id: 'obstaculo-1', nombre: 'Obstáculo 1' },
+        { id: 'obstaculo-2', nombre: 'Obstáculo 2' },
+        { id: 'Estrella_Documento-1', nombre: 'Estrella_Documento-1' }
+    ];
+    
+    elementos.forEach(elem => {
+        const elemento = document.getElementById(elem.id) || document.querySelector(`.${elem.id}`);
+        if (elemento) {
+            const estilo = window.getComputedStyle(elemento);
+            console.log(`  ${elem.nombre}:`);
+            console.log(`    - left: ${estilo.left}, top: ${estilo.top}`);
+            console.log(`    - width: ${estilo.width}, height: ${estilo.height}`);
+            console.log(`    - display: ${estilo.display}, opacity: ${estilo.opacity}`);
+            
+            // Calcular porcentaje aproximado
+            if (estilo.left && estilo.left.endsWith('px')) {
+                const px = parseFloat(estilo.left);
+                const porcentaje = (px / window.innerWidth) * 100;
+                console.log(`    - left (≈%): ${porcentaje.toFixed(1)}%`);
             }
-        }, 10000);
+            if (estilo.top && estilo.top.endsWith('px')) {
+                const px = parseFloat(estilo.top);
+                const porcentaje = (px / window.innerHeight) * 100;
+                console.log(`    - top (≈%): ${porcentaje.toFixed(1)}%`);
+            }
+        } else {
+            console.log(`  ${elem.nombre}: NO ENCONTRADO`);
+        }
+    });
+    
+    console.log('📏 Tamaño ventana:', window.innerWidth, 'x', window.innerHeight);
+    console.log('🔚 === FIN DEBUG ===');
+};
+
+/**
+ * Forzar sincronización de posiciones
+ */
+window.sincronizarPosiciones = function() {
+    if (window.mundoJuego1 && window.mundoJuego1.reiniciarPosicionesElementos) {
+        window.mundoJuego1.reiniciarPosicionesElementos();
+        console.log('✅ Posiciones sincronizadas manualmente');
     } else {
-        console.error('❌ AudioManager no disponible');
+        console.error('❌ No se puede sincronizar - Juego no inicializado');
+    }
+};
+
+/**
+ * Verificar colisiones en tiempo real
+ */
+window.debugColisiones = function() {
+    if (!window.mundoJuego1 || !window.mundoJuego1.configMovimiento) return;
+    
+    const posX = window.mundoJuego1.configMovimiento.posicion.x;
+    const posY = window.mundoJuego1.configMovimiento.posicion.y;
+    const posXPorcentaje = (posX / window.innerWidth) * 100;
+    const posYPorcentaje = (posY / window.innerHeight) * 100;
+    
+    console.log('🎯 DEBUG COLISIONES:');
+    console.log(`  Posición X: ${posX}px (${posXPorcentaje.toFixed(1)}%)`);
+    console.log(`  Posición Y: ${posY}px (${posYPorcentaje.toFixed(1)}%)`);
+    console.log(`  Saltando: ${window.mundoJuego1.configMovimiento.saltando}`);
+    
+    // Verificar hueco
+    if (window.mundoJuego1.configHueco) {
+        const enHueco = posXPorcentaje >= window.mundoJuego1.configHueco.inicio && 
+                       posXPorcentaje <= window.mundoJuego1.configHueco.fin;
+        console.log(`  En hueco (${window.mundoJuego1.configHueco.inicio}-${window.mundoJuego1.configHueco.fin}%): ${enHueco}`);
+    }
+    
+    // Verificar obstáculos
+    if (window.mundoJuego1.configObstaculos) {
+        window.mundoJuego1.configObstaculos.obstaculos.forEach((obs, i) => {
+            const enObs = posXPorcentaje >= obs.posicion.inicio && 
+                         posXPorcentaje <= obs.posicion.fin;
+            console.log(`  Obstáculo ${i+1} (${obs.posicion.inicio}-${obs.posicion.fin}%): ${enObs}`);
+        });
+    }
+    
+    // Verificar estrella
+    if (window.mundoJuego1.configEstrella) {
+        const estrellaElement = document.getElementById('Estrella_Documento-1');
+        if (estrellaElement) {
+            const jugadorRect = window.mundoJuego1.personaje.getBoundingClientRect();
+            const estrellaRect = estrellaElement.getBoundingClientRect();
+            
+            const colisionX = jugadorRect.right > estrellaRect.left && 
+                            jugadorRect.left < estrellaRect.right;
+            const colisionY = jugadorRect.bottom > estrellaRect.top && 
+                            jugadorRect.top < estrellaRect.bottom;
+            
+            console.log(`  Estrella_Documento-1 colisión X: ${colisionX}`);
+            console.log(`  Estrella_Documento-1 colisión Y: ${colisionY}`);
+            console.log(`  Estrella recogida: ${window.mundoJuego1.configEstrella.recogida}`);
+            console.log(`  Estrella activa: ${window.mundoJuego1.configEstrella.activo}`);
+            
+            if (colisionX && colisionY && window.mundoJuego1.configMovimiento.saltando) {
+                console.log('🎯 ¡DETECCIÓN DE ESTRELLA POSIBLE!');
+            }
+        }
+    }
+};
+
+/**
+ * Función de debug específica para la estrella en sección 1
+ */
+window.debugEstrella = function() {
+    if (window.mundoJuego1 && window.mundoJuego1.debugEstrellaSeccion1) {
+        window.mundoJuego1.debugEstrellaSeccion1();
+    } else {
+        console.error('❌ Juego no inicializado o función no disponible');
+    }
+};
+
+/**
+ * Forzar recolección de estrella (para testing)
+ */
+window.forzarRecoleccionEstrella = function() {
+    if (window.mundoJuego1 && window.mundoJuego1.tocarEstrella) {
+        window.mundoJuego1.tocarEstrella();
+        console.log('🔧 Recolección de estrella forzada manualmente');
+    } else {
+        console.error('❌ Juego no inicializado o función no disponible');
+    }
+};
+
+/**
+ * Verificar si la estrella está activa en la sección 1
+ */
+window.verificarEstrellaActiva = function() {
+    if (window.mundoJuego1) {
+        console.log('🔍 === VERIFICACIÓN ESTRELLA_DOCUMENTO-1 SECCIÓN 1 ===');
+        console.log(`Sección actual: ${window.mundoJuego1.seccionActual}`);
+        console.log(`Estrella activa: ${window.mundoJuego1.configEstrella?.activo}`);
+        console.log(`Estrella recogida: ${window.mundoJuego1.configEstrella?.recogida}`);
+        
+        const estrellaElement = document.getElementById('Estrella_Documento-1');
+        if (estrellaElement) {
+            console.log(`Elemento visible: ${estrellaElement.offsetParent !== null}`);
+            console.log(`Opacidad CSS: ${window.getComputedStyle(estrellaElement).opacity}`);
+            console.log(`Display CSS: ${window.getComputedStyle(estrellaElement).display}`);
+            console.log(`Clase CSS: ${estrellaElement.className}`);
+            
+            // Verificar si está en la sección activa correcta
+            const seccion1 = document.querySelector('.seccion-1');
+            if (seccion1) {
+                console.log(`Sección 1 activa: ${seccion1.classList.contains('activa')}`);
+                console.log(`Estrella en sección 1: ${seccion1.contains(estrellaElement)}`);
+            }
+        } else {
+            console.error('❌ Elemento Estrella_Documento-1 no encontrado en el DOM');
+        }
+        console.log('🔚 === FIN VERIFICACIÓN ===');
+    }
+};
+
+/**
+ * Activar modo debug de colisiones en tiempo real
+ */
+window.modoDebugColisiones = false;
+window.toggleDebugColisiones = function() {
+    window.modoDebugColisiones = !window.modoDebugColisiones;
+    console.log(`🔧 Modo debug colisiones: ${window.modoDebugColisiones ? 'ACTIVADO' : 'DESACTIVADO'}`);
+    
+    if (window.modoDebugColisiones) {
+        // Crear intervalo para mostrar colisiones en tiempo real
+        window.debugInterval = setInterval(() => {
+            if (window.mundoJuego1) {
+                const posX = window.mundoJuego1.configMovimiento.posicion.x;
+                const posY = window.mundoJuego1.configMovimiento.posicion.y;
+                const posXPorcentaje = (posX / window.innerWidth) * 100;
+                const posYPorcentaje = (posY / window.innerHeight) * 100;
+                
+                console.log(`🎯 LIVE: X=${posXPorcentaje.toFixed(1)}%, Y=${posYPorcentaje.toFixed(1)}%, Saltando=${window.mundoJuego1.configMovimiento.saltando}`);
+            }
+        }, 500);
+    } else {
+        clearInterval(window.debugInterval);
     }
 };

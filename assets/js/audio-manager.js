@@ -5,8 +5,8 @@
 class AudioManager {
     constructor() {
         this.audioElement = null;
-        this.volumeNormal = 1.0; // 100%
-        this.volumeReducido = 0.4; // 40%
+        this.volumeNormal = 0.2; // 20%
+        this.volumeReducido = 0.05; // 5%
         this.estaReproduciendo = false;
         this.estaEnVideo = false;
         this.inicializado = false;
