@@ -176,7 +176,7 @@ class MundoJuego1 {
     }
 
     /**
-     * Configura elementos específicos de la sección actual
+     * Configura elementos específicos de la sección actual - ACTUALIZADO PARA ESTRELLAS
      */
     configurarElementosSeccionActual() {
         // Hueco solo activo en sección 1
@@ -197,22 +197,35 @@ class MundoJuego1 {
             console.log('🚧 Obstáculos desactivados');
         }
         
-        // 🔥 CAMBIO: Estrella en sección 1 - Si no fue recogida, mostrarla
-        if (this.seccionActual === 1 && this.configEstrella) {
-            this.configEstrella.activo = true;
+        // 🔥 ACTUALIZADO: Configurar estado de todas las estrellas según la sección actual
+        if (this.estrellasConfig) {
+            Object.keys(this.estrellasConfig).forEach(estrellaId => {
+                const config = this.estrellasConfig[estrellaId];
+                
+                // Determinar en qué sección está cada estrella
+                let seccionEstrella = 1;
+                if (estrellaId.includes('Video-1')) seccionEstrella = 2;
+                else if (estrellaId.includes('Documento-2')) seccionEstrella = 3;
+                else if (estrellaId.includes('Video-2')) seccionEstrella = 3;
+                else if (estrellaId.includes('Video-3')) seccionEstrella = 4;
+                
+                // Activar/desactivar según la sección actual
+                config.activo = (seccionEstrella === this.seccionActual);
+                
+                // Mostrar u ocultar visualmente
+                const estrellaElement = document.getElementById(estrellaId);
+                if (estrellaElement) {
+                    if (config.activo && !config.recogida) {
+                        estrellaElement.style.opacity = '1';
+                        estrellaElement.style.pointerEvents = 'auto';
+                    } else {
+                        estrellaElement.style.opacity = '0';
+                        estrellaElement.style.pointerEvents = 'none';
+                    }
+                }
+            });
             
-            // Mostrar u ocultar según si ya fue recogida
-            const estrella = document.getElementById('Estrella_Documento-1');
-            if (estrella && !this.configEstrella.recogida) {
-                estrella.style.opacity = '1';
-                estrella.style.pointerEvents = 'auto';
-                console.log('⭐ Estrella_Documento-1 visible - Esperando contacto');
-            } else if (this.configEstrella.recogida) {
-                console.log('⭐ Estrella_Documento-1 ya recogida - Permanecerá oculta');
-            }
-        } else if (this.configEstrella) {
-            this.configEstrella.activo = false;
-            console.log('⭐ Estrella desactivada');
+            console.log(`⭐ Estado de estrellas actualizado para sección ${this.seccionActual}`);
         }
         
         // Configuraciones específicas por sección
@@ -221,7 +234,7 @@ class MundoJuego1 {
                 console.log('🎯 Sección 1: Hueco y Estrella (documento) activos');
                 break;
             case 2:
-                console.log('🎯 Sección 2: Obstáculos activos');
+                console.log('🎯 Sección 2: Obstáculos y Estrella (video) activos');
                 break;
             case 3:
                 console.log('🎯 Sección 3: Sin elementos especiales');
@@ -279,7 +292,7 @@ class MundoJuego1 {
 
         // Configuración del movimiento MEJORADA
         this.configMovimiento = {
-            velocidad: 6, 
+            velocidad: 4, 
             velocidadSalto: 15,
             gravedad: 0.8,
             enSuelo: true,
@@ -359,21 +372,68 @@ class MundoJuego1 {
     }
 
     /**
-     * Inicializa la detección de la estrella - Con posición exacta del CSS
+     * Inicializa la detección de todas las estrellas del juego
      */
     inicializarDeteccionEstrella() {
-        console.log('⭐ Inicializando detección de Estrella_Documento-1 con posición CSS...');
+        console.log('⭐ Inicializando detección de todas las estrellas...');
         
-        // 🔥 COORDINAR CON CSS EXACTO: top: 10%, left: 75%
-        this.configEstrella = {
-            activo: this.seccionActual === 1,
-            // Posición exacta del CSS: left: 75%, top: 10%
-            recogida: false,
-            elementoId: 'Estrella_Documento-1',
-            modalObjetivo: 1 // Modal 1 (Cartilla de Bienvenida)
+        this.estrellasConfig = {
+            // Estrella en sección 1 - Modal 1
+            'Estrella_Documento-1': {
+                activo: this.seccionActual === 1,
+                recogida: false,
+                modalObjetivo: 1,
+                elemento: null
+            },
+            // Estrella en sección 2 - Modal 2 (NUEVO)
+            'Estrella_Video-1': {
+                activo: this.seccionActual === 2,
+                recogida: false,
+                modalObjetivo: 2,
+                elemento: null
+            },
+            // Estrella en sección 3 - Modal 3
+            'Estrella_Documento-2': {
+                activo: this.seccionActual === 3,
+                recogida: false,
+                modalObjetivo: 3,
+                elemento: null
+            },
+            // Estrella en sección 3 - Modal 4
+            'Estrella_Video-2': {
+                activo: this.seccionActual === 3,
+                recogida: false,
+                modalObjetivo: 4,
+                elemento: null
+            },
+            // Estrella en sección 4 - Modal 5
+            'Estrella_Video-3': {
+                activo: this.seccionActual === 4,
+                recogida: false,
+                modalObjetivo: 5,
+                elemento: null
+            }
         };
         
-        console.log('📍 Estrella_Documento-1 configurada con posición CSS: left 75%, top 10%');
+        // Inicializar referencias a los elementos
+        Object.keys(this.estrellasConfig).forEach(estrellaId => {
+            const elemento = document.getElementById(estrellaId);
+            if (elemento) {
+                this.estrellasConfig[estrellaId].elemento = elemento;
+                
+                // Obtener modal objetivo del atributo data-modal si existe
+                const modalAttr = elemento.getAttribute('data-modal');
+                if (modalAttr) {
+                    this.estrellasConfig[estrellaId].modalObjetivo = parseInt(modalAttr);
+                }
+                
+                console.log(`📍 ${estrellaId} configurada - Modal: ${this.estrellasConfig[estrellaId].modalObjetivo}`);
+            } else {
+                console.warn(`⚠️ Elemento ${estrellaId} no encontrado en el DOM`);
+            }
+        });
+        
+        console.log('✅ Sistema de estrellas inicializado');
     }
 
     /**
@@ -401,75 +461,163 @@ class MundoJuego1 {
     }
 
     /**
-     * Verifica si el personaje puede tocar la estrella - ACTUALIZADO PARA USAR RECTÁNGULOS REALES
+     * Verifica si el personaje puede tocar cualquier estrella - ACTUALIZADO PARA TODAS LAS ESTRELLAS
      */
     verificarEstrella() {
-        // Solo verificar en sección 1, si no ha sido recogida y si está activa
-        if (!this.configEstrella || !this.configEstrella.activo || 
-            this.seccionActual !== 1 || this.configEstrella.recogida) {
-            return;
-        }
+        // Solo verificar en sección actual
+        if (!this.estrellasConfig) return;
         
-        // Obtener posición real del personaje usando getBoundingClientRect
+        // Filtrar estrellas activas en la sección actual y no recogidas
+        const estrellasActivas = Object.keys(this.estrellasConfig).filter(estrellaId => {
+            const config = this.estrellasConfig[estrellaId];
+            return config.activo && !config.recogida && config.elemento;
+        });
+        
+        if (estrellasActivas.length === 0) return;
+        
+        // Obtener posición real del personaje
         const jugadorRect = this.personaje.getBoundingClientRect();
-        const estrellaElement = document.getElementById('Estrella_Documento-1');
         
-        if (!estrellaElement) {
-            console.error('❌ Elemento Estrella_Documento-1 no encontrado');
-            return;
-        }
-        
-        // Obtener posición real de la estrella
-        const estrellaRect = estrellaElement.getBoundingClientRect();
-        
-        // Calcular colisión usando rectángulos reales
-        const colisionX = jugadorRect.right > estrellaRect.left && 
-                        jugadorRect.left < estrellaRect.right;
-        const colisionY = jugadorRect.bottom > estrellaRect.top && 
-                        jugadorRect.top < estrellaRect.bottom;
-        
-        // Verificar colisión con la estrella (solo cuando está saltando)
-        if (this.configMovimiento.saltando && colisionX && colisionY) {
-            console.log('⭐ ¡Has tocado la estrella en sección 1!');
-            this.tocarEstrella();
-        }
+        // Verificar cada estrella activa
+        estrellasActivas.forEach(estrellaId => {
+            const config = this.estrellasConfig[estrellaId];
+            const estrellaElement = config.elemento;
+            
+            // Obtener posición real de la estrella
+            const estrellaRect = estrellaElement.getBoundingClientRect();
+            
+            // Calcular colisión usando rectángulos reales
+            const colisionX = jugadorRect.right > estrellaRect.left && 
+                            jugadorRect.left < estrellaRect.right;
+            const colisionY = jugadorRect.bottom > estrellaRect.top && 
+                            jugadorRect.top < estrellaRect.bottom;
+            
+            // Verificar colisión con la estrella (solo cuando está saltando)
+            if (this.configMovimiento.saltando && colisionX && colisionY) {
+                console.log(`⭐ ¡Has tocado la estrella ${estrellaId}! Abriendo modal ${config.modalObjetivo}`);
+                this.tocarEstrella(estrellaId);
+            }
+        });
     }
 
     /**
-     * Maneja cuando el personaje toca la estrella - Ahora abre modal 1 y mantiene posición
+     * Maneja cuando el personaje toca una estrella - ACTUALIZADO PARA TODAS LAS ESTRELLAS
      */
-    tocarEstrella() {
-        // Marcar como recogida para evitar múltiples activaciones
-        this.configEstrella.recogida = true;
+    tocarEstrella(estrellaId) {
+        const config = this.estrellasConfig[estrellaId];
+        if (!config || config.recogida) return;
         
-        // 🔥 CAMBIO: Ocultar la estrella visualmente usando el ID correcto
-        const estrella = document.getElementById('Estrella_Documento-1');
-        if (estrella) {
-            estrella.style.opacity = '0';
-            estrella.style.pointerEvents = 'none';
-            console.log('👁️ Estrella_Documento-1 ocultada visualmente');
+        // Marcar como recogida
+        config.recogida = true;
+        
+        // Ocultar la estrella visualmente
+        const estrellaElement = document.getElementById(estrellaId);
+        if (estrellaElement) {
+            estrellaElement.style.opacity = '0';
+            estrellaElement.style.pointerEvents = 'none';
+            console.log(`👁️ ${estrellaId} ocultada visualmente`);
         } else {
-            console.error('❌ No se encontró el elemento Estrella_Documento-1');
+            console.error(`❌ No se encontró el elemento ${estrellaId}`);
         }
-        
-        // 🔥 IMPORTANTE: NO reiniciar posición del personaje
-        // El personaje se mantiene donde está
         
         // Aplicar animación de recolección al personaje
         this.personaje.classList.add('recogiendo-estrella');
         
-        // Mostrar mensaje de éxito
-        this.mostrarMensajeEstrellaRecogida();
+        // Mostrar mensaje de éxito específico para el tipo de estrella
+        this.mostrarMensajeEstrellaRecogida(config.modalObjetivo, estrellaId);
         
         // Reproducir sonido de estrella
         this.reproducirSonidoEstrella();
         
-        // 🔥 CAMBIO CRÍTICO: Abrir modal 1 después de un breve delay
+        // Abrir modal correspondiente después de un breve delay
         setTimeout(() => {
             this.personaje.classList.remove('recogiendo-estrella');
-            this.mostrarModalCapacitarse1(); // Modal 1
-            console.log('📖 Modal 1 activado por contacto con estrella en sección 1');
+            this.abrirModalPorNumero(config.modalObjetivo);
+            console.log(`📖 Modal ${config.modalObjetivo} activado por contacto con ${estrellaId}`);
         }, 600);
+    }
+
+    /**
+     * Muestra mensaje de recolección de estrella según el tipo
+     */
+    mostrarMensajeEstrellaRecogida(modalNumero, estrellaId) {
+        const mensaje = document.querySelector('.mensaje-caida');
+        if (!mensaje) return;
+        
+        let textoMensaje = '';
+        
+        // Personalizar mensaje según el modal objetivo
+        switch(modalNumero) {
+            case 1:
+                textoMensaje = '⭐ ¡Documento encontrado! Abriendo Cartilla de Bienvenida...';
+                break;
+            case 2:
+                textoMensaje = '🎥 ¡Video encontrado! Abriendo Video Cartilla de Bienvenida...';
+                break;
+            case 3:
+                textoMensaje = '⭐ ¡Documento encontrado! Abriendo Guía Coopcentral...';
+                break;
+            case 4:
+                textoMensaje = '🎥 ¡Video encontrado! Abriendo Cápsula 1 Seguridad y Salud...';
+                break;
+            case 5:
+                textoMensaje = '🎥 ¡Video encontrado! Abriendo Cápsula 2 Seguridad y Salud...';
+                break;
+            default:
+                textoMensaje = '⭐ ¡Objeto encontrado! Abriendo contenido...';
+        }
+        
+        mensaje.textContent = textoMensaje;
+        mensaje.style.display = 'block';
+        
+        // Forzar reflow para que la transición funcione
+        void mensaje.offsetWidth;
+        
+        setTimeout(() => {
+            mensaje.classList.add('mostrar');
+        }, 10);
+        
+        setTimeout(() => {
+            mensaje.classList.remove('mostrar');
+            setTimeout(() => {
+                mensaje.style.display = 'none';
+            }, 500);
+        }, 2000);
+        
+        console.log(`⭐ Mensaje de ${estrellaId} recogida mostrado`);
+    }
+
+    /**
+     * Abre un modal específico por número
+     */
+    abrirModalPorNumero(modalNumero) {
+        // Cerrar modal actual si existe
+        if (this.modalAbierto) {
+            this.cerrarModal(this.modalAbierto);
+        }
+        
+        // Abrir modal correspondiente
+        switch(modalNumero) {
+            case 1:
+                this.mostrarModalCapacitarse1();
+                break;
+            case 2:
+                this.mostrarModalCapacitarse2();
+                break;
+            case 3:
+                this.mostrarModalCapacitarse3();
+                break;
+            case 4:
+                this.mostrarModalCapacitarse4();
+                break;
+            case 5:
+                this.mostrarModalCapacitarse5();
+                break;
+            default:
+                console.warn(`⚠️ Modal número ${modalNumero} no reconocido`);
+                // Por defecto, abrir modal 1
+                this.mostrarModalCapacitarse1();
+        }
     }
 
     /**
@@ -556,18 +704,24 @@ class MundoJuego1 {
     }
 
     /**
-     * Resetea la estrella para que reaparezca (útil para reinicios completos)
+     * Resetea todas las estrellas para que reaparezcan
      */
     resetearEstrella() {
-        if (this.configEstrella) {
-            this.configEstrella.recogida = false;
-            
-            const estrella = document.getElementById('Estrella_Documento-1');
-            if (estrella) {
-                estrella.style.opacity = '1';
-                estrella.style.pointerEvents = 'auto';
-                console.log('🔄 Estrella_Documento-1 reseteada y visible');
-            }
+        if (this.estrellasConfig) {
+            Object.keys(this.estrellasConfig).forEach(estrellaId => {
+                const config = this.estrellasConfig[estrellaId];
+                config.recogida = false;
+                
+                const estrellaElement = document.getElementById(estrellaId);
+                if (estrellaElement) {
+                    // Solo mostrar si está en la sección correcta
+                    if (config.activo) {
+                        estrellaElement.style.opacity = '1';
+                        estrellaElement.style.pointerEvents = 'auto';
+                    }
+                }
+            });
+            console.log('🔄 Todas las estrellas reseteadas');
         }
     }
 
@@ -606,12 +760,10 @@ class MundoJuego1 {
         this.configMovimiento.saltosRealizados = 0;
         this.configMovimiento.puedeSaltarDeNuevo = true;
         
-        // 🔥 NO REINICIAR LA ESTRELLA - Se mantiene oculta si ya fue recogida
-        if (this.configEstrella && this.configEstrella.recogida) {
-            console.log('⭐ Estrella ya recogida - No se reinicia');
-        }
+        // 🔥 ACTUALIZADO: Resetear todas las estrellas
+        this.resetearEstrella();
         
-        console.log('✅ Personaje reiniciado en sección 1 con saltos reseteados');
+        console.log('✅ Personaje reiniciado en sección 1 con todas las estrellas reseteadas');
     }
 
     /**
@@ -2484,5 +2636,32 @@ window.toggleDebugColisiones = function() {
         }, 500);
     } else {
         clearInterval(window.debugInterval);
+    }
+};
+
+/**
+ * Verificar estado de todas las estrellas (para testing)
+ */
+window.debugEstrellas = function() {
+    if (window.mundoJuego1 && window.mundoJuego1.estrellasConfig) {
+        console.log('🔍 === DEBUG TODAS LAS ESTRELLAS ===');
+        Object.keys(window.mundoJuego1.estrellasConfig).forEach(estrellaId => {
+            const config = window.mundoJuego1.estrellasConfig[estrellaId];
+            console.log(`${estrellaId}:`);
+            console.log(`  - Activa: ${config.activo}`);
+            console.log(`  - Recogida: ${config.recogida}`);
+            console.log(`  - Modal objetivo: ${config.modalObjetivo}`);
+            
+            const elemento = document.getElementById(estrellaId);
+            if (elemento) {
+                const estilo = window.getComputedStyle(elemento);
+                console.log(`  - Visible: ${estilo.opacity === '1'}`);
+                console.log(`  - Display: ${estilo.display}`);
+            }
+        });
+        console.log(`🎯 Sección actual: ${window.mundoJuego1.seccionActual}`);
+        console.log('🔚 === FIN DEBUG ===');
+    } else {
+        console.error('❌ Juego no inicializado o sistema de estrellas no disponible');
     }
 };
