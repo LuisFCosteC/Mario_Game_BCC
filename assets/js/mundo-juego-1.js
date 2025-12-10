@@ -20,7 +20,10 @@ class MundoJuego1 {
         this.colisionando = false;
         
         // Sistema de estrella
-        this.configEstrella = null;
+        this.estrellasConfig = null;
+        
+        // 🔥 NUEVO: Bandera para saber si la modal se abrió por una estrella
+        this.modalAbiertaPorEstrella = false;
         
         this.init();
     }
@@ -596,6 +599,10 @@ class MundoJuego1 {
             this.cerrarModal(this.modalAbierto);
         }
         
+        // 🔥 NUEVO: Marcar que esta modal se abrió por una estrella
+        this.modalAbiertaPorEstrella = true;
+        console.log(`⭐ Modal ${modalNumero} abierta por contacto con estrella`);
+        
         // Abrir modal correspondiente
         switch(modalNumero) {
             case 1:
@@ -677,33 +684,6 @@ class MundoJuego1 {
     }
 
     /**
-     * Muestra mensaje de recolección de estrella
-     */
-    mostrarMensajeEstrellaRecogida() {
-        const mensaje = document.querySelector('.mensaje-caida');
-        if (mensaje) {
-            mensaje.textContent = '⭐ ¡Documento encontrado! Abriendo información...';
-            mensaje.style.display = 'block';
-            
-            // Forzar reflow para que la transición funcione
-            void mensaje.offsetWidth;
-            
-            setTimeout(() => {
-                mensaje.classList.add('mostrar');
-            }, 10);
-            
-            setTimeout(() => {
-                mensaje.classList.remove('mostrar');
-                setTimeout(() => {
-                    mensaje.style.display = 'none';
-                }, 500);
-            }, 2000);
-            
-            console.log('⭐ Mensaje de estrella recogida mostrado');
-        }
-    }
-
-    /**
      * Resetea todas las estrellas para que reaparezcan
      */
     resetearEstrella() {
@@ -763,28 +743,10 @@ class MundoJuego1 {
         // 🔥 ACTUALIZADO: Resetear todas las estrellas
         this.resetearEstrella();
         
+        // 🔥 NUEVO: Resetear bandera de modal abierta por estrella
+        this.modalAbiertaPorEstrella = false;
+        
         console.log('✅ Personaje reiniciado en sección 1 con todas las estrellas reseteadas');
-    }
-
-    /**
-     * Reinicia el estado de la estrella
-     */
-    reiniciarEstrella() {
-        if (this.configEstrella) {
-            this.configEstrella.recogida = false;
-            
-            // 🔥 CAMBIO: Mostrar la estrella visualmente usando el ID correcto
-            const estrella = document.getElementById('Estrella_Documento-1');
-            if (estrella) {
-                estrella.style.opacity = '1';
-                estrella.style.pointerEvents = 'auto';
-                console.log('👁️ Estrella_Documento-1 mostrada visualmente');
-            } else {
-                console.error('❌ No se encontró el elemento Estrella_Documento-1');
-            }
-            
-            console.log('🔄 Estado de la estrella reiniciado');
-        }
     }
 
     /**
@@ -1029,6 +991,7 @@ class MundoJuego1 {
             }
         }
     }
+    
     /**
      * Actualiza la posición visual del personaje
      */
@@ -1481,6 +1444,9 @@ class MundoJuego1 {
             this.cerrarModal(overlayAnterior);
         }
         
+        // 🔥 IMPORTANTE: Resetear la bandera cuando se abre desde el menú
+        this.modalAbiertaPorEstrella = false;
+        
         const overlay = this.crearOverlay();
         const modalContenedorPadre = overlay.querySelector('.modal-contenedor-padre');
         const modal = this.crearElemento('div', 'modal-capacitarse');
@@ -1593,31 +1559,58 @@ class MundoJuego1 {
         
         const barraProgreso = this.crearBarraProgreso();
         
-        const botonSiguienteNivel1 = this.crearBoton(
-            'boton-siguiente-nivel-capacitarse-1',
-            'Continuar al siguiente nivel de capacitación',
-            'Siguiente Nivel'
-        );
+        // 🔥 CAMBIO CRÍTICO: Diferentes botones según cómo se abrió la modal
+        let botonAccion;
+        
+        if (this.modalAbiertaPorEstrella) {
+            // Si se abrió por una estrella, el botón debe regresar al juego
+            botonAccion = this.crearBoton(
+                'boton-siguiente-nivel-capacitarse-1',
+                'Volver al juego',
+                'Continuar Juego'
+            );
+            
+            botonAccion.addEventListener('click', () => {
+                console.log('🎮 Regresando al juego desde modal 1 (abierta por estrella)');
+                this.cerrarModal(overlay);
+                this.modalAbiertaPorEstrella = false; // Resetear bandera
+            });
+        } else {
+            // Si se abrió desde el menú de capacitación, comportamiento normal
+            botonAccion = this.crearBoton(
+                'boton-siguiente-nivel-capacitarse-1',
+                'Continuar al siguiente nivel de capacitación',
+                'Siguiente Nivel'
+            );
+            
+            botonAccion.addEventListener('click', () => {
+                this.mostrarModalCapacitarse2(overlay);
+            });
+        }
         
         content.appendChild(imagenEstrellas);
         content.appendChild(imagenManualContainer);
         content.appendChild(barraProgreso.container);
-        content.appendChild(botonSiguienteNivel1);
+        content.appendChild(botonAccion);
         
         modal.appendChild(content);
         modalContenedorPadre.appendChild(modal);
         document.body.appendChild(overlay);
         
-        setTimeout(() => {
-            barraProgreso.carga.style.width = '16.6%';
-        }, 500);
-        
-        botonSiguienteNivel1.addEventListener('click', () => {
-            this.mostrarModalCapacitarse2(overlay);
-        });
+        // Animar barra de progreso solo si no se abrió por estrella
+        if (!this.modalAbiertaPorEstrella) {
+            setTimeout(() => {
+                barraProgreso.carga.style.width = '16.6%';
+            }, 500);
+        } else {
+            // Si se abrió por estrella, mostrar progreso al 16.6%
+            setTimeout(() => {
+                barraProgreso.carga.style.width = '16.6%';
+            }, 500);
+        }
         
         this.modalAbierto = overlay;
-        console.log('📖 Modal de capacitación nivel 1 (PDF Bienvenido Coopcentral) mostrado');
+        console.log('📖 Modal de capacitación nivel 1 mostrado');
     }
 
     /** =======================================================================================================================================
@@ -1691,12 +1684,36 @@ class MundoJuego1 {
         // Barra de progreso general
         const barraProgreso = this.crearBarraProgreso();
         
-        // Botón para siguiente nivel (modal 3)
-        const botonSiguienteNivel = this.crearBoton(
-            'boton-navegacion-modal',
-            'Continuar al siguiente nivel de capacitación',
-            'Siguiente Nivel'
-        );
+        // 🔥 CAMBIO CRÍTICO: Diferentes botones según cómo se abrió la modal
+        let botonAccion;
+        
+        if (this.modalAbiertaPorEstrella) {
+            // Si se abrió por una estrella, el botón debe regresar al juego
+            botonAccion = this.crearBoton(
+                'boton-navegacion-modal',
+                'Volver al juego',
+                'Continuar Juego'
+            );
+            
+            botonAccion.addEventListener('click', () => {
+                video.pause();
+                console.log('🎮 Regresando al juego desde modal 2 (abierta por estrella)');
+                this.cerrarModal(overlay);
+                this.modalAbiertaPorEstrella = false; // Resetear bandera
+            });
+        } else {
+            // Si se abrió desde el menú de capacitación, comportamiento normal
+            botonAccion = this.crearBoton(
+                'boton-navegacion-modal',
+                'Continuar al siguiente nivel de capacitación',
+                'Siguiente Nivel'
+            );
+            
+            botonAccion.addEventListener('click', () => {
+                video.pause();
+                this.mostrarModalCapacitarse3(overlay);
+            });
+        }
         
         // Ensamblar componentes
         contenedorInfo.appendChild(infoVideo);
@@ -1709,7 +1726,7 @@ class MundoJuego1 {
         content.appendChild(barraProgresoVideo);
         content.appendChild(controlesVideo);
         content.appendChild(barraProgreso.container);
-        content.appendChild(botonSiguienteNivel);
+        content.appendChild(botonAccion);
         
         modal.appendChild(content);
         modalContenedorPadre.appendChild(modal);
@@ -1718,19 +1735,19 @@ class MundoJuego1 {
         // Configurar eventos del video
         this.configurarEventosVideo(video, barraProgresoVideoCarga);
         
-        // Animar barras de progreso
-        setTimeout(() => {
-            barraProgreso.carga.style.width = '33.2%';
-        }, 500);
-        
-        // CORRECCIÓN CRÍTICA: Cambiado de mostrarModalCapacitarse2 a mostrarModalCapacitarse3
-        botonSiguienteNivel.addEventListener('click', () => {
-            video.pause();
-            this.mostrarModalCapacitarse3(overlay);
-        });
+        // Animar barras de progreso según cómo se abrió
+        if (!this.modalAbiertaPorEstrella) {
+            setTimeout(() => {
+                barraProgreso.carga.style.width = '33.2%';
+            }, 500);
+        } else {
+            setTimeout(() => {
+                barraProgreso.carga.style.width = '33.2%';
+            }, 500);
+        }
         
         this.modalAbierto = overlay;
-        console.log('🎥 Modal de capacitación nivel 2 (CARTILLA DE BIENVENIDA -- Su Guia Coopcentral) mostrado');
+        console.log('🎥 Modal de capacitación nivel 2 mostrado');
     }
 
     /**
@@ -1862,16 +1879,39 @@ class MundoJuego1 {
         
         const barraProgreso = this.crearBarraProgreso();
         
-        const botonSiguienteNivel3 = this.crearBoton(
-            'boton-siguiente-nivel-capacitarse-3',
-            'Continuar al siguiente nivel de capacitación',
-            'Siguiente Nivel'
-        );
+        // 🔥 CAMBIO CRÍTICO: Diferentes botones según cómo se abrió la modal
+        let botonAccion;
+        
+        if (this.modalAbiertaPorEstrella) {
+            // Si se abrió por una estrella, el botón debe regresar al juego
+            botonAccion = this.crearBoton(
+                'boton-siguiente-nivel-capacitarse-3',
+                'Volver al juego',
+                'Continuar Juego'
+            );
+            
+            botonAccion.addEventListener('click', () => {
+                console.log('🎮 Regresando al juego desde modal 3 (abierta por estrella)');
+                this.cerrarModal(overlay);
+                this.modalAbiertaPorEstrella = false; // Resetear bandera
+            });
+        } else {
+            // Si se abrió desde el menú de capacitación, comportamiento normal
+            botonAccion = this.crearBoton(
+                'boton-siguiente-nivel-capacitarse-3',
+                'Continuar al siguiente nivel de capacitación',
+                'Siguiente Nivel'
+            );
+            
+            botonAccion.addEventListener('click', () => {
+                this.mostrarModalCapacitarse4(overlay);
+            });
+        }
         
         content.appendChild(imagenEstrellas);
         content.appendChild(imagenManualContainer);
         content.appendChild(barraProgreso.container);
-        content.appendChild(botonSiguienteNivel3);
+        content.appendChild(botonAccion);
         
         modal.appendChild(content);
         modalContenedorPadre.appendChild(modal);
@@ -1881,11 +1921,6 @@ class MundoJuego1 {
         setTimeout(() => {
             barraProgreso.carga.style.width = '49.8%';
         }, 500);
-        
-        // Navegación al siguiente nivel (modal 4)
-        botonSiguienteNivel3.addEventListener('click', () => {
-            this.mostrarModalCapacitarse4(overlay);
-        });
         
         this.modalAbierto = overlay;
         console.log('📖 Modal de capacitación nivel 3 (PDF Guía Coopcentral) mostrado');
@@ -1962,12 +1997,36 @@ class MundoJuego1 {
         // Barra de progreso general
         const barraProgreso = this.crearBarraProgreso();
         
-        // Botón para siguiente nivel (modal 5)
-        const botonSiguienteNivel = this.crearBoton(
-            'boton-navegacion-modal',
-            'Continuar al siguiente nivel de capacitación',
-            'Siguiente Nivel'
-        );
+        // 🔥 CAMBIO CRÍTICO: Diferentes botones según cómo se abrió la modal
+        let botonAccion;
+        
+        if (this.modalAbiertaPorEstrella) {
+            // Si se abrió por una estrella, el botón debe regresar al juego
+            botonAccion = this.crearBoton(
+                'boton-navegacion-modal',
+                'Volver al juego',
+                'Continuar Juego'
+            );
+            
+            botonAccion.addEventListener('click', () => {
+                video.pause();
+                console.log('🎮 Regresando al juego desde modal 4 (abierta por estrella)');
+                this.cerrarModal(overlay);
+                this.modalAbiertaPorEstrella = false; // Resetear bandera
+            });
+        } else {
+            // Si se abrió desde el menú de capacitación, comportamiento normal
+            botonAccion = this.crearBoton(
+                'boton-navegacion-modal',
+                'Continuar al siguiente nivel de capacitación',
+                'Siguiente Nivel'
+            );
+            
+            botonAccion.addEventListener('click', () => {
+                video.pause();
+                this.mostrarModalCapacitarse5(overlay);
+            });
+        }
         
         // Ensamblar componentes
         contenedorInfo.appendChild(infoVideo);
@@ -1980,7 +2039,7 @@ class MundoJuego1 {
         content.appendChild(barraProgresoVideo);
         content.appendChild(controlesVideo);
         content.appendChild(barraProgreso.container);
-        content.appendChild(botonSiguienteNivel);
+        content.appendChild(botonAccion);
         
         modal.appendChild(content);
         modalContenedorPadre.appendChild(modal);
@@ -1993,12 +2052,6 @@ class MundoJuego1 {
         setTimeout(() => {
             barraProgreso.carga.style.width = '66.4%';
         }, 500);
-        
-        // Evento para botón siguiente - Navega a modal 5
-        botonSiguienteNivel.addEventListener('click', () => {
-            video.pause();
-            this.mostrarModalCapacitarse5(overlay);
-        });
         
         this.modalAbierto = overlay;
         console.log('🎥 Modal de capacitación nivel 4 (Capsula 1 Seguridad y Salud) mostrado');
@@ -2075,12 +2128,36 @@ class MundoJuego1 {
         // Barra de progreso general
         const barraProgreso = this.crearBarraProgreso();
         
-        // Botón para siguiente nivel (modal 6)
-        const botonSiguienteNivel = this.crearBoton(
-            'boton-navegacion-modal',
-            'Continuar al siguiente nivel de capacitación',
-            'Siguiente Nivel'
-        );
+        // 🔥 CAMBIO CRÍTICO: Diferentes botones según cómo se abrió la modal
+        let botonAccion;
+        
+        if (this.modalAbiertaPorEstrella) {
+            // Si se abrió por una estrella, el botón debe regresar al juego
+            botonAccion = this.crearBoton(
+                'boton-navegacion-modal',
+                'Volver al juego',
+                'Continuar Juego'
+            );
+            
+            botonAccion.addEventListener('click', () => {
+                video.pause();
+                console.log('🎮 Regresando al juego desde modal 5 (abierta por estrella)');
+                this.cerrarModal(overlay);
+                this.modalAbiertaPorEstrella = false; // Resetear bandera
+            });
+        } else {
+            // Si se abrió desde el menú de capacitación, comportamiento normal
+            botonAccion = this.crearBoton(
+                'boton-navegacion-modal',
+                'Continuar al siguiente nivel de capacitación',
+                'Siguiente Nivel'
+            );
+            
+            botonAccion.addEventListener('click', () => {
+                video.pause();
+                this.mostrarModalCapacitarse6(overlay);
+            });
+        }
         
         // Ensamblar componentes
         contenedorInfo.appendChild(infoVideo);
@@ -2093,7 +2170,7 @@ class MundoJuego1 {
         content.appendChild(barraProgresoVideo);
         content.appendChild(controlesVideo);
         content.appendChild(barraProgreso.container);
-        content.appendChild(botonSiguienteNivel);
+        content.appendChild(botonAccion);
         
         modal.appendChild(content);
         modalContenedorPadre.appendChild(modal);
@@ -2106,12 +2183,6 @@ class MundoJuego1 {
         setTimeout(() => {
             barraProgreso.carga.style.width = '83%';
         }, 500);
-        
-        // Evento para botón siguiente - Navega a modal 6 (final)
-        botonSiguienteNivel.addEventListener('click', () => {
-            video.pause();
-            this.mostrarModalCapacitarse6(overlay);
-        });
         
         this.modalAbierto = overlay;
         console.log('🎥 Modal de capacitación nivel 5 (Capsula 2 Seguridad y Salud) mostrado');
@@ -2289,6 +2360,10 @@ class MundoJuego1 {
             
             document.body.removeChild(modal);
             this.modalAbierto = null;
+            
+            // 🔥 IMPORTANTE: Resetear la bandera cuando se cierra cualquier modal
+            this.modalAbiertaPorEstrella = false;
+            
             console.log('🔒 Modal cerrado');
         }
     }
@@ -2399,7 +2474,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         function inicializarJuego() {
             window.mundoJuego1 = new MundoJuego1();
-            console.log('🚀 Mundo Juego 1 cargado exitosamente con Estrella_Documento-1 modificada');
+            console.log('🚀 Mundo Juego 1 cargado exitosamente con todas las modificaciones');
         }
         
         window.addEventListener('beforeunload', function() {
@@ -2449,11 +2524,6 @@ window.debugPosiciones = function() {
         });
     }
     
-    if (window.mundoJuego1.configEstrella) {
-        console.log(`  Estrella_Documento-1 recogida: ${window.mundoJuego1.configEstrella.recogida}`);
-        console.log(`  Estrella_Documento-1 activa: ${window.mundoJuego1.configEstrella.activo}`);
-    }
-    
     // Posiciones reales en CSS
     console.log('🎨 POSICIONES CSS REALES:');
     
@@ -2461,7 +2531,11 @@ window.debugPosiciones = function() {
         { id: 'hueco-peligro', nombre: 'Hueco' },
         { id: 'obstaculo-1', nombre: 'Obstáculo 1' },
         { id: 'obstaculo-2', nombre: 'Obstáculo 2' },
-        { id: 'Estrella_Documento-1', nombre: 'Estrella_Documento-1' }
+        { id: 'Estrella_Documento-1', nombre: 'Estrella_Documento-1' },
+        { id: 'Estrella_Video-1', nombre: 'Estrella_Video-1' },
+        { id: 'Estrella_Documento-2', nombre: 'Estrella_Documento-2' },
+        { id: 'Estrella_Video-2', nombre: 'Estrella_Video-2' },
+        { id: 'Estrella_Video-3', nombre: 'Estrella_Video-3' }
     ];
     
     elementos.forEach(elem => {
@@ -2537,27 +2611,12 @@ window.debugColisiones = function() {
         });
     }
     
-    // Verificar estrella
-    if (window.mundoJuego1.configEstrella) {
-        const estrellaElement = document.getElementById('Estrella_Documento-1');
-        if (estrellaElement) {
-            const jugadorRect = window.mundoJuego1.personaje.getBoundingClientRect();
-            const estrellaRect = estrellaElement.getBoundingClientRect();
-            
-            const colisionX = jugadorRect.right > estrellaRect.left && 
-                            jugadorRect.left < estrellaRect.right;
-            const colisionY = jugadorRect.bottom > estrellaRect.top && 
-                            jugadorRect.top < estrellaRect.bottom;
-            
-            console.log(`  Estrella_Documento-1 colisión X: ${colisionX}`);
-            console.log(`  Estrella_Documento-1 colisión Y: ${colisionY}`);
-            console.log(`  Estrella recogida: ${window.mundoJuego1.configEstrella.recogida}`);
-            console.log(`  Estrella activa: ${window.mundoJuego1.configEstrella.activo}`);
-            
-            if (colisionX && colisionY && window.mundoJuego1.configMovimiento.saltando) {
-                console.log('🎯 ¡DETECCIÓN DE ESTRELLA POSIBLE!');
-            }
-        }
+    // Verificar estrellas
+    if (window.mundoJuego1.estrellasConfig) {
+        Object.keys(window.mundoJuego1.estrellasConfig).forEach(estrellaId => {
+            const config = window.mundoJuego1.estrellasConfig[estrellaId];
+            console.log(`  ${estrellaId}: activa=${config.activo}, recogida=${config.recogida}`);
+        });
     }
 };
 
@@ -2577,7 +2636,7 @@ window.debugEstrella = function() {
  */
 window.forzarRecoleccionEstrella = function() {
     if (window.mundoJuego1 && window.mundoJuego1.tocarEstrella) {
-        window.mundoJuego1.tocarEstrella();
+        window.mundoJuego1.tocarEstrella('Estrella_Documento-1');
         console.log('🔧 Recolección de estrella forzada manualmente');
     } else {
         console.error('❌ Juego no inicializado o función no disponible');
@@ -2591,8 +2650,8 @@ window.verificarEstrellaActiva = function() {
     if (window.mundoJuego1) {
         console.log('🔍 === VERIFICACIÓN ESTRELLA_DOCUMENTO-1 SECCIÓN 1 ===');
         console.log(`Sección actual: ${window.mundoJuego1.seccionActual}`);
-        console.log(`Estrella activa: ${window.mundoJuego1.configEstrella?.activo}`);
-        console.log(`Estrella recogida: ${window.mundoJuego1.configEstrella?.recogida}`);
+        console.log(`Estrella activa: ${window.mundoJuego1.estrellasConfig?.['Estrella_Documento-1']?.activo}`);
+        console.log(`Estrella recogida: ${window.mundoJuego1.estrellasConfig?.['Estrella_Documento-1']?.recogida}`);
         
         const estrellaElement = document.getElementById('Estrella_Documento-1');
         if (estrellaElement) {
@@ -2660,6 +2719,7 @@ window.debugEstrellas = function() {
             }
         });
         console.log(`🎯 Sección actual: ${window.mundoJuego1.seccionActual}`);
+        console.log(`🎯 Modal abierta por estrella: ${window.mundoJuego1.modalAbiertaPorEstrella}`);
         console.log('🔚 === FIN DEBUG ===');
     } else {
         console.error('❌ Juego no inicializado o sistema de estrellas no disponible');
