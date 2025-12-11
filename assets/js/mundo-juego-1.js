@@ -295,7 +295,7 @@ class MundoJuego1 {
 
         // Configuración del movimiento MEJORADA
         this.configMovimiento = {
-            velocidad: 4, 
+            velocidad: 10, 
             velocidadSalto: 15,
             gravedad: 0.8,
             enSuelo: true,
@@ -1101,17 +1101,26 @@ class MundoJuego1 {
     }
 
     /**
-     * Verifica si el personaje llegó a la meta
+     * Verifica si el personaje llegó a la meta - MEJORADO
      */
     verificarMeta() {
+        // Solo verificar en la última sección
         if (this.seccionActual !== this.totalSecciones) return;
         
         const meta = document.getElementById('meta');
         if (!meta) return;
         
-        const posXPorcentaje = (this.configMovimiento.posicion.x / window.innerWidth) * 100;
+        // Calcular posición de la meta en la pantalla
+        const metaRect = meta.getBoundingClientRect();
+        const jugadorRect = this.personaje.getBoundingClientRect();
         
-        if (posXPorcentaje >= 85) {
+        // Verificar colisión real entre los rectángulos
+        const colisionX = jugadorRect.right > metaRect.left && 
+                        jugadorRect.left < metaRect.right;
+        const colisionY = jugadorRect.bottom > metaRect.top && 
+                        jugadorRect.top < metaRect.bottom;
+        
+        if (colisionX && colisionY) {
             console.log('🎉 ¡Has llegado a la meta!');
             this.mostrarVictoria();
         }

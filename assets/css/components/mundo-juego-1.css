@@ -1130,6 +1130,37 @@ body.pagina-mundo-juego {
     transform: scale(0.95);
 }
 
+/* ========== META FINAL ========== */
+.meta-final {
+    position: absolute;
+    top: 58%; /* Misma posición vertical que los caminos */
+    left: 85%; /* Posición cerca del final de la sección 4 */
+    width: 100px; /* Ajusta según el tamaño de la imagen */
+    height: 100px; /* Ajusta según el tamaño de la imagen */
+    background-image: url('../../img/Meta-Mundo-1.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    z-index: calc(var(--z-index-camino) + 5); /* Por encima del camino */
+    pointer-events: none; /* No interfiere con otros eventos */
+    opacity: 0; /* Oculto por defecto */
+    transition: opacity 0.3s ease-in-out;
+    display: block; /* Asegurar que se muestra */
+}
+
+/* Mostrar la meta solo en la sección 4 activa */
+.seccion-4.activa .meta-final {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Ocultar meta en otras secciones */
+.seccion-mundo:not(.seccion-4) .meta-final,
+.seccion-4:not(.activa) .meta-final {
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
 /* ========== MODAL DE CAPACITARSE NIVEL 1 - Cartilla de Bienvenida ========== */
 .modal-capacitarse-1 {
     background-image: url('../../img/Modal_capacitarse_fondo_documento.png');
@@ -1906,5 +1937,36 @@ body.pagina-mundo-juego {
     /* Imagen de Estrellas para Nivel 6 */
     .imagen-estrellas-6 {
         margin-bottom: 340px;
+    }
+
+    /* ========== META FINAL ========== */
+    .meta-final {
+        position: absolute;
+        top: 30%;
+        left: 85%;
+        width: 250px;
+        height: 250px;
+        background-image: url('../../img/Meta-Mundo-1.png');
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        z-index: calc(var(--z-index-camino) + 5); /* Por encima del camino */
+        pointer-events: none; /* No interfiere con otros eventos */
+        opacity: 0; /* Oculto por defecto */
+        transition: opacity 0.3s ease-in-out;
+        display: block; /* Asegurar que se muestra */
+    }
+
+    /* Mostrar la meta solo en la sección 4 activa */
+    .seccion-4.activa .meta-final {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    /* Ocultar meta en otras secciones */
+    .seccion-mundo:not(.seccion-4) .meta-final,
+    .seccion-4:not(.activa) .meta-final {
+        opacity: 0 !important;
+        pointer-events: none !important;
     }
 }
