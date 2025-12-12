@@ -24,6 +24,9 @@ class MundoJuego1 {
         
         // 🔥 NUEVO: Bandera para saber si la modal se abrió por una estrella
         this.modalAbiertaPorEstrella = false;
+
+        // Busca esta línea en el constructor y añade la nueva propiedad
+        this.metaAnimada = false; // Para controlar que la animación solo se ejecute una vez
         
         this.init();
     }
@@ -241,6 +244,12 @@ class MundoJuego1 {
                 break;
             case 4:
                 console.log('🎯 Sección 4: 2 Obstáculos, Estrella (video) y Meta final activos');
+                
+                // 🔥 Asegurar que la meta tenga la clase 'activa' para el efecto de pulso
+                const meta = document.getElementById('meta');
+                if (meta && !meta.classList.contains('activa')) {
+                    meta.classList.add('activa');
+                }
                 break;
         }
     }
@@ -787,6 +796,14 @@ class MundoJuego1 {
     reiniciarAPosicionInicial() {
         console.log('🔄 Reiniciando personaje a posición inicial...');
         
+        // 🔥 NUEVO: Remover animación de la meta si está presente
+        const meta = document.getElementById('meta');
+        if (meta) {
+            meta.classList.remove('animar-meta');
+            this.metaAnimada = false;
+        }
+        
+        // Resto del código existente...
         // Cambiar a sección 1
         this.cambiarASeccion(1);
         
@@ -795,6 +812,7 @@ class MundoJuego1 {
         
         // Reactivar controles
         this.configMovimiento.enSuelo = true;
+        this.configMovimiento.velocidad = 10; // Restaurar velocidad
         
         // 🔥 NUEVO: Resetear estados de salto
         this.configMovimiento.saltosRealizados = 0;
@@ -1161,11 +1179,11 @@ class MundoJuego1 {
     }
 
     /**
-     * Verifica si el personaje llegó a la meta - MEJORADO
+     * Verifica si el personaje llegó a la meta - MEJORADO CON ANIMACIÓN
      */
     verificarMeta() {
         // Solo verificar en la última sección
-        if (this.seccionActual !== this.totalSecciones) return;
+        if (this.seccionActual !== this.totalSecciones || this.metaAnimada) return;
         
         const meta = document.getElementById('meta');
         if (!meta) return;
@@ -1181,8 +1199,60 @@ class MundoJuego1 {
                         jugadorRect.top < metaRect.bottom;
         
         if (colisionX && colisionY) {
-            console.log('🎉 ¡Has llegado a la meta!');
-            this.mostrarVictoria();
+            console.log('🎉 ¡Has llegado a la meta! Activando animación...');
+            
+            // Marcar que la meta ya fue animada
+            this.metaAnimada = true;
+            
+            // Desactivar controles del personaje temporalmente
+            this.configMovimiento.velocidad = 0;
+            this.teclas.ArrowLeft = false;
+            this.teclas.ArrowRight = false;
+            this.teclas.ArrowUp = false;
+            
+            // Aplicar animación a la meta
+            meta.classList.add('animar-meta');
+            
+            // Reproducir sonido de victoria si está disponible
+            this.reproducirSonidoVictoria();
+            
+            // Mostrar mensaje de victoria después de un breve delay
+            setTimeout(() => {
+                this.mostrarVictoria();
+            }, 800); // Esperar a que la animación esté en su punto máximo
+        }
+    }
+
+    /**
+     * Reproduce sonido de victoria (placeholder - puedes añadir un archivo de audio real)
+     */
+    reproducirSonidoVictoria() {
+        console.log('🎵 Reproduciendo sonido de victoria');
+        // Aquí puedes integrar con tu AudioManager
+        if (window.audioManager) {
+            // Ejemplo de cómo podría ser:
+            // window.audioManager.reproducirEfecto('victoria');
+        }
+        
+        // Efecto de audio temporal usando el Web Audio API
+        try {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.setValueAtTime(440, audioContext.currentTime);
+            oscillator.frequency.exponentialRampToValueAtTime(880, audioContext.currentTime + 0.5);
+            
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 1);
+            
+            oscillator.start();
+            oscillator.stop(audioContext.currentTime + 1);
+        } catch (error) {
+            console.log('⚠️ No se pudo reproducir efecto de audio:', error);
         }
     }
 

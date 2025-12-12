@@ -1859,6 +1859,84 @@ body.pagina-mundo-juego {
         margin-bottom: 50px;
     }
 
+    /* ========== ANIMACIÓN DE LA META FINAL ========== */
+    .meta-final.animar-meta {
+        animation: agrandarMeta 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        z-index: calc(var(--z-index-ui) + 50); /* Asegurar que esté por encima de todo */
+    }
+
+    @keyframes agrandarMeta {
+        0% {
+            transform: scale(1) rotate(0deg);
+            opacity: 1;
+            filter: brightness(1) drop-shadow(0 0 0 rgba(255, 215, 0, 0));
+        }
+        25% {
+            transform: scale(1.2) rotate(-5deg);
+            filter: brightness(1.2) drop-shadow(0 0 10px rgba(255, 215, 0, 0.5));
+        }
+        50% {
+            transform: scale(1.8) rotate(5deg);
+            filter: brightness(1.5) drop-shadow(0 0 20px rgba(255, 215, 0, 0.8));
+        }
+        75% {
+            transform: scale(2.2) rotate(-3deg);
+            filter: brightness(1.8) drop-shadow(0 0 30px rgba(255, 215, 0, 1));
+        }
+        100% {
+            transform: scale(2.5) rotate(0deg);
+            opacity: 0.9;
+            filter: brightness(2) drop-shadow(0 0 40px rgba(255, 215, 0, 1));
+        }
+    }
+
+    /* Efecto de partículas/brillo adicional */
+    .meta-final.animar-meta::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        right: -50%;
+        bottom: -50%;
+        background: radial-gradient(circle, rgba(255, 215, 0, 0.3) 0%, transparent 70%);
+        border-radius: 50%;
+        animation: brilloMeta 1.5s ease-in-out infinite alternate;
+        z-index: -1;
+        pointer-events: none;
+    }
+
+    @keyframes brilloMeta {
+        0%, 100% {
+            opacity: 0.3;
+            transform: scale(1);
+        }
+        50% {
+            opacity: 0.7;
+            transform: scale(1.2);
+        }
+    }
+
+    /* Asegurar que la meta tenga position: relative para el pseudo-elemento */
+    .meta-final {
+        position: relative;
+    }
+
+    /* Efecto de pulso para la meta cuando el personaje está cerca */
+    .meta-final.activa {
+        animation: pulsoMeta 2s ease-in-out infinite;
+    }
+
+    @keyframes pulsoMeta {
+        0%, 100% {
+            transform: scale(1);
+            filter: brightness(1);
+        }
+        50% {
+            transform: scale(1.05);
+            filter: brightness(1.2);
+        }
+    }
+
     /* ========== RESPONSIVIDAD PARA MODAL 1 ========== */
     .modal-capacitarse-1 {
         width: 55%;
