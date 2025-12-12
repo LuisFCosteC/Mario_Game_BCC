@@ -442,46 +442,118 @@ body.pagina-mundo-juego {
     50% { opacity: 0.7; }
 }
 
-/* ========== OBSTÁCULOS ========== */
-.obstaculo-1, .obstaculo-2 {
+/* ========== SISTEMA COMPLETO DE OBSTÁCULOS POR SECCIÓN ========== */
+
+/* CONFIGURACIÓN GENERAL DE OBSTÁCULOS */
+.obstaculo {
     position: absolute;
-    top: 55%; /* Misma posición vertical que el camino */
     width: 80px;
     height: 80px;
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
-    z-index: var(--z-index-camino); /* Para que esté sobre el camino */
-    pointer-events: none; /* No interferir con otros eventos */
-    opacity: 0; /* Oculto por defecto */
+    z-index: var(--z-index-camino);
+    pointer-events: none;
+    opacity: 0;
     transition: opacity 0.3s ease-in-out;
+    display: block;
 }
 
 /* Mostrar obstáculos solo en sección activa */
-.seccion-2.activa .obstaculo-1,
-.seccion-2.activa .obstaculo-2 {
+.seccion-mundo.activa .obstaculo {
     opacity: 1;
     pointer-events: auto;
 }
 
-/* Ocultar obstáculos en otras secciones */
-.seccion-mundo:not(.seccion-2) .obstaculo-1,
-.seccion-mundo:not(.seccion-2) .obstaculo-2,
-.seccion-2:not(.activa) .obstaculo-1,
-.seccion-2:not(.activa) .obstaculo-2 {
+/* Ocultar obstáculos en secciones inactivas */
+.seccion-mundo:not(.activa) .obstaculo {
     opacity: 0 !important;
     pointer-events: none !important;
 }
 
-/* Imágenes específicas para cada obstáculo */
-.obstaculo-1 {
+/* ========== OBSTÁCULOS SECCIÓN 2 ========== */
+/* Obstáculo 1 en sección 2 */
+#obstaculo-sec2-1 {
     background-image: url('../../img/obstaculo-1.png');
-    left: 20%; /* Posición horizontal en la sección 2 */
+    top: 55%; /* Alineado con el camino */
+    left: 20%; /* Posición específica sección 2 */
 }
 
-.obstaculo-2 {
+/* Obstáculo 2 en sección 2 */
+#obstaculo-sec2-2 {
     background-image: url('../../img/obstaculo-2.png');
-    left: 70%; /* Posición horizontal en la sección 2 */
+    top: 55%;
+    left: 70%; /* Posición específica sección 2 */
+}
+
+/* ========== ELEMENTOS SECCIÓN 3 ========== */
+/* Obstáculo en sección 3 */
+#obstaculo-sec3-1 {
+    background-image: url('../../img/obstaculo-1.png');
+    top: 55%; /* Sobre el camino */
+    left: 48%; /* Posición específica sección 3 */
+}
+
+/* ========== OBSTÁCULOS SECCIÓN 4 ========== */
+/* Obstáculo 1 en sección 4 */
+#obstaculo-sec4-1 {
+    background-image: url('../../img/obstaculo-1.png');
+    top: 55%;
+    left: 20%; /* Posición específica sección 4 */
+}
+
+/* Obstáculo 2 en sección 4 */
+#obstaculo-sec4-2 {
+    background-image: url('../../img/obstaculo-2.png');
+    top: 55%;
+    left: 60%; /* Posición específica sección 4 */
+}
+
+/* Mostrar elementos solo en sección activa */
+.seccion-mundo.activa .escalera,
+.seccion-mundo.activa .plataforma {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Ocultar elementos en secciones inactivas */
+.seccion-mundo:not(.activa) .escalera,
+.seccion-mundo:not(.activa) .plataforma {
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+/* ========== ANIMACIÓN DE OBSTÁCULOS ========== */
+.obstaculo {
+    animation: flotarObstaculo 2s ease-in-out infinite;
+}
+
+@keyframes flotarObstaculo {
+    0%, 100% {
+        transform: translateY(0) rotate(0deg);
+    }
+    50% {
+        transform: translateY(-5px) rotate(2deg);
+    }
+}
+
+/* Efecto de advertencia para obstáculos */
+.obstaculo::before {
+    content: '';
+    position: absolute;
+    top: -15px;
+    left: -15px;
+    right: -15px;
+    bottom: -15px;
+    background: radial-gradient(circle, rgba(255,0,0,0.1) 0%, transparent 70%);
+    border-radius: 50%;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+    z-index: -1;
+}
+
+.obstaculo:hover::before {
+    opacity: 1;
 }
 
 /* ========== ESTRELLA DOCUMENTO ========== */
@@ -524,7 +596,7 @@ body.pagina-mundo-juego {
 .Estrella_Documento-2 {
     position: absolute;
     top: 10%;
-    left: 30%; /* Primera estrella en sección 3 */
+    left: 25%; /* Primera estrella en sección 3 */
     width: 80px;
     height: 80px;
     background-image: url('../../img/Estrella_Documento.png');
@@ -542,7 +614,7 @@ body.pagina-mundo-juego {
 .Estrella_Video-2 {
     position: absolute;
     top: 10%;
-    left: 70%; /* Segunda estrella en sección 3 */
+    left: 75%; /* Segunda estrella en sección 3 */
     width: 80px;
     height: 80px;
     background-image: url('../../img/Estrella_Video.png');
@@ -560,7 +632,7 @@ body.pagina-mundo-juego {
 .Estrella_Video-3 {
     position: absolute;
     top: 10%;
-    left: 50%; /* Estrella en sección 4 */
+    left: 40%; /* Estrella en sección 4 */
     width: 80px;
     height: 80px;
     background-image: url('../../img/Estrella_Video.png');

@@ -179,7 +179,7 @@ class MundoJuego1 {
     }
 
     /**
-     * Configura elementos específicos de la sección actual - ACTUALIZADO PARA ESTRELLAS
+     * Configura elementos específicos de la sección actual - ACTUALIZADO
      */
     configurarElementosSeccionActual() {
         // Hueco solo activo en sección 1
@@ -191,13 +191,10 @@ class MundoJuego1 {
             this.ocultarIndicadorHueco();
         }
         
-        // Configurar estado de obstáculos
-        if (this.seccionActual === 2 && this.configObstaculos) {
-            this.configObstaculos.activo = true;
-            console.log('🚧 Obstáculos activados en sección 2');
-        } else if (this.configObstaculos) {
-            this.configObstaculos.activo = false;
-            console.log('🚧 Obstáculos desactivados');
+        // Activar/desactivar obstáculos según sección
+        if (this.configObstaculos) {
+            this.configObstaculos.activo = true; // Siempre activo, pero filtrado por sección
+            console.log(`🚧 Obstáculos activados para sección ${this.seccionActual}`);
         }
         
         // 🔥 ACTUALIZADO: Configurar estado de todas las estrellas según la sección actual
@@ -237,13 +234,13 @@ class MundoJuego1 {
                 console.log('🎯 Sección 1: Hueco y Estrella (documento) activos');
                 break;
             case 2:
-                console.log('🎯 Sección 2: Obstáculos y Estrella (video) activos');
+                console.log('🎯 Sección 2: 2 Obstáculos y Estrella (video) activos');
                 break;
             case 3:
-                console.log('🎯 Sección 3: Sin elementos especiales');
+                console.log('🎯 Sección 3: Escaleras, Plataforma, 1 Obstáculo y 2 Estrellas activos');
                 break;
             case 4:
-                console.log('🎯 Sección 4: Meta final activa');
+                console.log('🎯 Sección 4: 2 Obstáculos, Estrella (video) y Meta final activos');
                 break;
         }
     }
@@ -348,30 +345,67 @@ class MundoJuego1 {
     }
 
     /**
-     * CORREGIDO: Inicializa la detección de obstáculos con posiciones ajustadas al CSS
+     * Inicializa la detección de TODOS los obstáculos con posiciones coordinadas CSS-JS
      */
     inicializarDeteccionObstaculos() {
-        console.log('🚧 Inicializando detección de obstáculos con posiciones CSS coordinadas...');
+        console.log('🚧 Inicializando detección completa de obstáculos...');
         
         this.configObstaculos = {
-            activo: this.seccionActual === 2,
+            activo: true, // Activo por defecto, se controla por sección
             obstaculos: [
-                // AJUSTADO: Coordinar con CSS donde left: 20% y width: 80px
+                // SECCIÓN 2
                 { 
-                    id: 'obstaculo-1', 
-                    // CSS: left: 20%, width: 80px (≈5% en pantalla 1600px)
-                    posicion: { inicio: 18, fin: 20 } // Más preciso: 20% a 25%
+                    id: 'obstaculo-sec2-1', 
+                    seccion: 2,
+                    posicion: { inicio: 18, fin: 22 }, // CSS: left 20%, width 80px
+                    tipo: 'obstaculo'
                 },
-                // AJUSTADO: Coordinar con CSS donde left: 70% y width: 80px
                 { 
-                    id: 'obstaculo-2', 
-                    // CSS: left: 70%, width: 80px (≈5% en pantalla 1600px)
-                    posicion: { inicio: 68, fin: 70 } // Más preciso: 70% a 75%
+                    id: 'obstaculo-sec2-2', 
+                    seccion: 2,
+                    posicion: { inicio: 68, fin: 72 }, // CSS: left 70%, width 80px
+                    tipo: 'obstaculo'
+                },
+                
+                // SECCIÓN 3
+                { 
+                    id: 'escalera-sec3', 
+                    seccion: 3,
+                    posicion: { inicio: 28, fin: 32 }, // CSS: left 30%, width 120px
+                    tipo: 'escalera',
+                    permitePaso: true // Las escaleras permiten pasar
+                },
+                { 
+                    id: 'plataforma-sec3', 
+                    seccion: 3,
+                    posicion: { inicio: 48, fin: 52 }, // CSS: left 50%, width 150px
+                    tipo: 'plataforma',
+                    permiteSalto: true // Permite saltar desde ella
+                },
+                { 
+                    id: 'obstaculo-sec3-1', 
+                    seccion: 3,
+                    posicion: { inicio: 46, fin: 50 }, // CSS: left 60%, width 80px
+                    tipo: 'obstaculo'
+                },
+                
+                // SECCIÓN 4
+                { 
+                    id: 'obstaculo-sec4-1', 
+                    seccion: 4,
+                    posicion: { inicio: 18, fin: 22 }, // CSS: left 30%, width 80px
+                    tipo: 'obstaculo'
+                },
+                { 
+                    id: 'obstaculo-sec4-2', 
+                    seccion: 4,
+                    posicion: { inicio: 58, fin: 62 }, // CSS: left 60%, width 80px
+                    tipo: 'obstaculo'
                 }
             ]
         };
         
-        console.log('📍 Obstáculos configurados con posiciones CSS:', this.configObstaculos.obstaculos);
+        console.log('📍 Configuración completa de obstáculos cargada:', this.configObstaculos.obstaculos.length, 'elementos');
     }
 
     /**
@@ -440,25 +474,51 @@ class MundoJuego1 {
     }
 
     /**
-     * Verifica colisión con obstáculos
+     * Verifica colisión con TODOS los obstáculos según la sección actual
      */
     verificarObstaculos() {
-        // Solo verificar en sección 2 y si no hay colisión en curso
-        if (!this.configObstaculos || !this.configObstaculos.activo || 
-            this.seccionActual !== 2 || this.colisionando) {
+        // Solo verificar si hay colisión en curso
+        if (this.colisionando || !this.configObstaculos) {
             return;
         }
         
         const posXPorcentaje = (this.configMovimiento.posicion.x / window.innerWidth) * 100;
+        const posYPorcentaje = (this.configMovimiento.posicion.y / window.innerHeight) * 100;
         
-        // Verificar colisión con cada obstáculo
-        this.configObstaculos.obstaculos.forEach(obstaculo => {
+        // Filtrar obstáculos de la sección actual
+        const obstaculosSeccion = this.configObstaculos.obstaculos.filter(
+            obstaculo => obstaculo.seccion === this.seccionActual
+        );
+        
+        // Verificar colisión con cada obstáculo de la sección
+        obstaculosSeccion.forEach(obstaculo => {
+            // Verificar si está en el rango horizontal
             if (posXPorcentaje >= obstaculo.posicion.inicio && 
-                posXPorcentaje <= obstaculo.posicion.fin && 
-                this.configMovimiento.enSuelo) {
+                posXPorcentaje <= obstaculo.posicion.fin) {
                 
-                console.log(`💥 Colisión con ${obstaculo.id}!`);
-                this.iniciarColisionObstaculo(obstaculo.id);
+                // Lógica diferente según tipo de elemento
+                switch(obstaculo.tipo) {
+                    case 'obstaculo':
+                        // Solo colisiona si está en el suelo (no saltando)
+                        if (this.configMovimiento.enSuelo) {
+                            console.log(`💥 Colisión con ${obstaculo.id}!`);
+                            this.iniciarColisionObstaculo(obstaculo.id);
+                        }
+                        break;
+                        
+                    case 'escalera':
+                        // Las escaleras permiten pasar, podrían dar un bonus
+                        console.log(`🪜 En escalera ${obstaculo.id}`);
+                        break;
+                        
+                    case 'plataforma':
+                        // Las plataformas permiten aterrizar encima
+                        if (this.configMovimiento.saltando && posYPorcentaje < 10) {
+                            console.log(`🛹 Aterrizando en plataforma ${obstaculo.id}`);
+                            // Podrías agregar lógica para que se quede en la plataforma
+                        }
+                        break;
+                }
             }
         });
     }
@@ -2733,4 +2793,113 @@ window.debugEstrellas = function() {
     } else {
         console.error('❌ Juego no inicializado o sistema de estrellas no disponible');
     }
+};
+
+/**
+ * Verifica la sincronización completa CSS-JS
+ */
+window.verificarSincronizacionCompleta = function() {
+    if (!window.mundoJuego1) {
+        console.error('❌ MundoJuego1 no está inicializado');
+        return;
+    }
+    
+    console.log('🔍 === VERIFICACIÓN COMPLETA CSS-JS ===');
+    
+    // Verificar todos los elementos del juego
+    const elementos = [
+        // Sección 1
+        { id: 'hueco-peligro', nombre: 'Hueco peligro', seccion: 1 },
+        { id: 'Estrella_Documento-1', nombre: 'Estrella Documento 1', seccion: 1 },
+        
+        // Sección 2
+        { id: 'obstaculo-sec2-1', nombre: 'Obstáculo Sección 2-1', seccion: 2 },
+        { id: 'obstaculo-sec2-2', nombre: 'Obstáculo Sección 2-2', seccion: 2 },
+        { id: 'Estrella_Video-1', nombre: 'Estrella Video 1', seccion: 2 },
+        
+        // Sección 3
+        { id: 'escalera-sec3', nombre: 'Escalera Sección 3', seccion: 3 },
+        { id: 'plataforma-sec3', nombre: 'Plataforma Sección 3', seccion: 3 },
+        { id: 'obstaculo-sec3-1', nombre: 'Obstáculo Sección 3-1', seccion: 3 },
+        { id: 'Estrella_Documento-2', nombre: 'Estrella Documento 2', seccion: 3 },
+        { id: 'Estrella_Video-2', nombre: 'Estrella Video 2', seccion: 3 },
+        
+        // Sección 4
+        { id: 'obstaculo-sec4-1', nombre: 'Obstáculo Sección 4-1', seccion: 4 },
+        { id: 'obstaculo-sec4-2', nombre: 'Obstáculo Sección 4-2', seccion: 4 },
+        { id: 'Estrella_Video-3', nombre: 'Estrella Video 3', seccion: 4 },
+        { id: 'meta', nombre: 'Meta final', seccion: 4 }
+    ];
+    
+    // Verificar cada elemento
+    elementos.forEach(elem => {
+        const elemento = document.getElementById(elem.id);
+        if (elemento) {
+            const estilo = window.getComputedStyle(elemento);
+            const visible = estilo.opacity !== '0' && estilo.display !== 'none';
+            const enSeccionCorrecta = window.mundoJuego1.seccionActual === elem.seccion;
+            
+            console.log(`✅ ${elem.nombre}:`);
+            console.log(`   - Visible: ${visible}`);
+            console.log(`   - Sección actual: ${enSeccionCorrecta ? '✔' : '✘'}`);
+            console.log(`   - CSS: left ${estilo.left}, top ${estilo.top}`);
+            console.log(`   - Dimensiones: ${estilo.width} x ${estilo.height}`);
+            
+            // Verificar si está en la sección correcta del DOM
+            const seccionPadre = elemento.closest(`.seccion-${elem.seccion}`);
+            console.log(`   - En sección ${elem.seccion}: ${seccionPadre ? '✔' : '✘'}`);
+        } else {
+            console.error(`❌ ${elem.nombre}: NO ENCONTRADO EN DOM`);
+        }
+    });
+    
+    // Verificar configuraciones JS
+    console.log('⚙️ CONFIGURACIONES JS:');
+    console.log(`   - Sección actual: ${window.mundoJuego1.seccionActual}`);
+    console.log(`   - Total obstáculos configurados: ${window.mundoJuego1.configObstaculos?.obstaculos?.length || 0}`);
+    console.log(`   - Total estrellas configuradas: ${Object.keys(window.mundoJuego1.estrellasConfig || {}).length}`);
+    
+    console.log('🔚 === FIN VERIFICACIÓN ===');
+};
+
+/**
+ * Comandos de depuración para la consola del navegador
+ */
+
+// Forzar mostrar todos los elementos (para testing)
+window.mostrarTodosElementos = function() {
+    document.querySelectorAll('.seccion-mundo').forEach(seccion => {
+        seccion.classList.add('activa');
+    });
+    console.log('🔧 Todos los elementos mostrados (modo testing)');
+};
+
+// Ocultar todos los elementos excepto sección actual
+window.ocultarElementosNoActuales = function() {
+    document.querySelectorAll('.seccion-mundo').forEach(seccion => {
+        const numSeccion = Array.from(seccion.classList)
+            .find(c => c.startsWith('seccion-'))
+            ?.replace('seccion-', '');
+        
+        if (parseInt(numSeccion) !== window.mundoJuego1.seccionActual) {
+            seccion.classList.remove('activa');
+        }
+    });
+    console.log('🔧 Solo sección actual visible');
+};
+
+// Verificar colisiones en tiempo real
+window.monitorColisiones = function() {
+    const intervalo = setInterval(() => {
+        if (window.mundoJuego1) {
+            const posX = window.mundoJuego1.configMovimiento.posicion.x;
+            const posY = window.mundoJuego1.configMovimiento.posicion.y;
+            const posXPorcentaje = (posX / window.innerWidth) * 100;
+            
+            console.log(`🎯 LIVE: X=${posX}px (${posXPorcentaje.toFixed(1)}%), Y=${posY}px, Sección=${window.mundoJuego1.seccionActual}`);
+        }
+    }, 100);
+    
+    console.log('🔍 Monitor de colisiones activado. Usa clearInterval(intervalo) para detener.');
+    return intervalo;
 };
