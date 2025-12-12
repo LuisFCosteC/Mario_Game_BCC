@@ -1182,7 +1182,7 @@ class MundoJuego1 {
      * Verifica si el personaje llegó a la meta - MEJORADO CON ANIMACIÓN
      */
     verificarMeta() {
-        // Solo verificar en la última sección
+        // Solo verificar en la última sección y si la meta no ha sido agarrada aún
         if (this.seccionActual !== this.totalSecciones || this.metaAnimada) return;
         
         const meta = document.getElementById('meta');
@@ -1210,49 +1210,124 @@ class MundoJuego1 {
             this.teclas.ArrowRight = false;
             this.teclas.ArrowUp = false;
             
-            // Aplicar animación a la meta
-            meta.classList.add('animar-meta');
+            // Aplicar animación AGARRADA a la meta
+            meta.classList.add('agarrada');
+            
+            // Cambiar sprite del personaje al de victoria
+            this.personaje.classList.add('meta');
             
             // Reproducir sonido de victoria si está disponible
             this.reproducirSonidoVictoria();
             
             // Mostrar mensaje de victoria después de un breve delay
+            // para que la animación de la meta sea visible
             setTimeout(() => {
                 this.mostrarVictoria();
-            }, 800); // Esperar a que la animación esté en su punto máximo
+            }, 1000); // Esperar a que la animación esté en su punto máximo
         }
     }
 
     /**
-     * Reproduce sonido de victoria (placeholder - puedes añadir un archivo de audio real)
+     * Reproduce sonido de victoria con efecto de crescendo
      */
     reproducirSonidoVictoria() {
-        console.log('🎵 Reproduciendo sonido de victoria');
-        // Aquí puedes integrar con tu AudioManager
+        console.log('🎵 Reproduciendo sonido de victoria con efecto especial');
+        
+        // Primero, reducir el volumen del audio de fondo si existe
         if (window.audioManager) {
-            // Ejemplo de cómo podría ser:
-            // window.audioManager.reproducirEfecto('victoria');
+            window.audioManager.reducirVolumenParaVideo();
         }
         
-        // Efecto de audio temporal usando el Web Audio API
+        // Crear contexto de audio para efectos especiales
         try {
             const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            const oscillator = audioContext.createOscillator();
-            const gainNode = audioContext.createGain();
             
-            oscillator.connect(gainNode);
-            gainNode.connect(audioContext.destination);
+            // Crear múltiples osciladores para un efecto más rico
+            const oscillators = [];
+            const gains = [];
             
-            oscillator.frequency.setValueAtTime(440, audioContext.currentTime);
-            oscillator.frequency.exponentialRampToValueAtTime(880, audioContext.currentTime + 0.5);
+            // Crear 3 osciladores con frecuencias diferentes (acorde mayor)
+            const frequencies = [523.25, 659.25, 783.99]; // Do, Mi, Sol (C, E, G)
             
-            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 1);
+            frequencies.forEach((freq, index) => {
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.type = 'sine'; // Sonido más suave
+                oscillator.frequency.setValueAtTime(freq, audioContext.currentTime);
+                
+                // Añadir vibrato sutil
+                oscillator.frequency.setValueAtTime(freq, audioContext.currentTime + 0.5);
+                oscillator.frequency.exponentialRampToValueAtTime(freq * 1.02, audioContext.currentTime + 0.6);
+                oscillator.frequency.exponentialRampToValueAtTime(freq, audioContext.currentTime + 0.7);
+                
+                // Configurar envolvente de volumen
+                gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+                gainNode.gain.linearRampToValueAtTime(0.15, audioContext.currentTime + 0.1);
+                gainNode.gain.exponentialRampToValueAtTime(0.05, audioContext.currentTime + 0.5);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 1.5);
+                gainNode.gain.linearRampToValueAtTime(0, audioContext.currentTime + 2);
+                
+                oscillators.push(oscillator);
+                gains.push(gainNode);
+            });
             
-            oscillator.start();
-            oscillator.stop(audioContext.currentTime + 1);
+            // Añadir un oscilador de bajo para más cuerpo
+            const bassOscillator = audioContext.createOscillator();
+            const bassGain = audioContext.createGain();
+            bassOscillator.connect(bassGain);
+            bassGain.connect(audioContext.destination);
+            
+            bassOscillator.type = 'sine';
+            bassOscillator.frequency.setValueAtTime(261.63, audioContext.currentTime); // Do una octava más bajo
+            
+            bassGain.gain.setValueAtTime(0, audioContext.currentTime);
+            bassGain.gain.linearRampToValueAtTime(0.1, audioContext.currentTime + 0.2);
+            bassGain.gain.exponentialRampToValueAtTime(0.02, audioContext.currentTime + 1);
+            bassGain.gain.linearRampToValueAtTime(0, audioContext.currentTime + 1.5);
+            
+            // Iniciar todos los osciladores
+            oscillators.forEach(osc => osc.start());
+            bassOscillator.start();
+            
+            // Detener después de 2 segundos
+            setTimeout(() => {
+                oscillators.forEach(osc => osc.stop());
+                bassOscillator.stop();
+                
+                // Restaurar volumen del audio de fondo
+                if (window.audioManager) {
+                    setTimeout(() => {
+                        window.audioManager.restaurarVolumenNormal();
+                    }, 500);
+                }
+            }, 2000);
+            
         } catch (error) {
-            console.log('⚠️ No se pudo reproducir efecto de audio:', error);
+            console.log('⚠️ No se pudo reproducir efecto de audio avanzado:', error);
+            // Fallback a efecto simple
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.setValueAtTime(440, audioContext.currentTime);
+                oscillator.frequency.exponentialRampToValueAtTime(880, audioContext.currentTime + 0.5);
+                
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 1);
+                
+                oscillator.start();
+                oscillator.stop(audioContext.currentTime + 1);
+            } catch (simpleError) {
+                console.log('⚠️ Efecto de audio simple también falló:', simpleError);
+            }
         }
     }
 
